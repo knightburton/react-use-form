@@ -1,38 +1,31 @@
-import { useState, useCallback } from 'react';
+import { useReducer, useCallback } from 'react';
 import { useInputInterface } from './interfaces/index.interface';
-import { getValidationError } from './helpers';
+import { getValidationError, getInitialState, reducer } from './helpers';
 
 const useInput = ({ defaultValue = '', valudationSchema, callback, resetOnCallback = false }: useInputInterface) => {
-  const [value, setValue] = useState(defaultValue);
-  const [error, setError] = useState('');
+  const [state, dispatch] = useReducer(reducer, defaultValue, getInitialState);
 
-  const handleChange = useCallback(({ target: { value: incomingValue } }) => {
-    setValue(incomingValue);
-    setError('');
-  }, []);
+  const handleChange = useCallback(({ target: { value } }) => dispatch({ payload: { value } }), [dispatch]);
 
   const handleSubmit = useCallback(
     event => {
       if (event) event.preventDefault();
 
-      const validationError = getValidationError(value, valudationSchema);
+      const validationError = getValidationError(state.value, valudationSchema);
 
       if (!validationError) {
-        if (callback) callback(value);
-        if (resetOnCallback) {
-          setValue(defaultValue);
-          setError('');
-        }
+        if (callback) callback(state.value);
+        if (resetOnCallback) dispatch({ type: 'reset', payload: defaultValue });
         return;
       }
-      setError(validationError);
+      dispatch({ type: 'validate', payload: validationError });
     },
-    [value, valudationSchema, callback, resetOnCallback, defaultValue],
+    [dispatch, state, valudationSchema, callback, resetOnCallback, defaultValue],
   );
 
-  const updateDefaultValue = useCallback(updateValue => setValue(updateValue), []);
+  const updateDefaultValue = useCallback(value => dispatch({ payload: { value } }), [dispatch]);
 
-  return [value, error, handleChange, handleSubmit, updateDefaultValue];
+  return [state.value, state.error, handleChange, handleSubmit, updateDefaultValue];
 };
 
 export default useInput;

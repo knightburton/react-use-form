@@ -25,3 +25,14 @@ export const getValidationError = (value: ValueType, validationSchema: Validatio
   }
   return '';
 };
+
+export const getInitialState = (initialValue: ValueType): StateType => ({ value: initialValue || '', error: '' });
+
+export const reducer = (state: StateType, { type, payload }: StateActionType) => {
+  if (type === 'reset') return getInitialState(payload);
+  if (type === 'validate') return { ...state, error: payload };
+  return {
+    value: payload.value,
+    error: payload.error || '',
+  };
+};
