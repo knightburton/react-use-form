@@ -1,4 +1,10 @@
-type ValueType = string | number | object | array | boolean | null;
+enum ActionTypes {
+  Reset = 'RESET',
+  Validate = 'VALIDATE',
+  Change = 'CHANGE',
+}
+
+type ValueType = string | number | object | array | boolean | Date | null;
 type ValidatorType = ((value: ValueType) => boolean) | RegExp;
 type ErrorType = ((value: ValueType) => string) | string;
 type ValidationSchemaType = {
@@ -6,14 +12,19 @@ type ValidationSchemaType = {
   requiredError?: ErrorType;
   validators?: ValidatorType[];
   errors?: ErrorType[];
-} | undefined;
+};
 type CallbackType = (value: ValueType) => void;
 type InvalidValidatorIndexType = number | null;
 type StateType = {
   value: ValueType;
   error: string;
 };
-type StateActionType = {
-  type?: string;
-  payload?: StateType | ValueType;
+type ActionMap<M extends { [index: string]: any }> = {
+  [Key in keyof M]: { type: Key; payload: M[Key] };
 };
+type PayloadType = {
+  [ActionTypes.Reset]: ValueType;
+  [ActionTypes.Validate]: string;
+  [ActionTypes.Change]: ValueType;
+};
+type ActionsType = ActionMap<PayloadType>[keyof ActionMap<PayloadType>];

@@ -28,9 +28,15 @@ export const getValidationError = (value: ValueType, validationSchema: Validatio
 
 export const getInitialState = (initialValue: ValueType): StateType => ({ value: initialValue || '', error: '' });
 
-export const reducer = (state: StateType, { type, payload }: StateActionType) => {
-  if (type === 'reset') return getInitialState(payload);
-  if (type === 'validate') return { ...state, error: payload };
-  if (type === 'change') return { value: payload.value, error: '' };
-  return state;
+export const reducer = (state: StateType, action: ActionsType) => {
+  switch (action.type) {
+    case ActionTypes.Reset:
+      return getInitialState(action.payload);
+    case ActionTypes.Validate:
+      return { ...state, error: action.payload };
+    case ActionTypes.Change:
+      return { value: action.payload, error: '' };
+    default:
+      return state;
+  }
 };
