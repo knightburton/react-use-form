@@ -31,8 +31,6 @@ export const getInitialState = (initialValue: ValueType): StateType => ({ value:
 export const reducer = (state: StateType, { type, payload }: StateActionType) => {
   if (type === 'reset') return getInitialState(payload);
   if (type === 'validate') return { ...state, error: payload };
-  return {
-    value: payload.value,
-    error: payload.error || '',
-  };
+  if (type === 'change') return { value: payload.value, error: '' };
+  return state;
 };

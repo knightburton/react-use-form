@@ -5,7 +5,7 @@ import { getValidationError, getInitialState, reducer } from './helpers';
 const useInput = ({ defaultValue = '', valudationSchema, callback, resetOnCallback = false, preventDefaultEventOnSubmit = true }: useInputInterface) => {
   const [state, dispatch] = useReducer(reducer, defaultValue, getInitialState);
 
-  const handleChange = useCallback(({ target: { value } }) => dispatch({ payload: { value } }), [dispatch]);
+  const handleChange = useCallback(({ target: { value } }) => dispatch({ type: 'change', payload: { value } }), [dispatch]);
 
   const handleSubmit = useCallback(
     event => {
@@ -23,7 +23,7 @@ const useInput = ({ defaultValue = '', valudationSchema, callback, resetOnCallba
     [dispatch, state, valudationSchema, callback, resetOnCallback, defaultValue, preventDefaultEventOnSubmit],
   );
 
-  const updateDefaultValue = useCallback(value => dispatch({ payload: { value } }), [dispatch]);
+  const updateDefaultValue = useCallback(value => dispatch({ type: 'change', payload: { value } }), [dispatch]);
 
   return [state.value, state.error, handleChange, handleSubmit, updateDefaultValue];
 };
