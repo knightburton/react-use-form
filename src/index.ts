@@ -2,14 +2,14 @@ import { useReducer, useCallback } from 'react';
 import { useInputInterface } from './interfaces/index.interface';
 import { getValidationError, getInitialState, reducer } from './helpers';
 
-const useInput = ({ defaultValue = '', valudationSchema, callback, resetOnCallback = false }: useInputInterface) => {
+const useInput = ({ defaultValue = '', valudationSchema, callback, resetOnCallback = false, preventDefaultEventOnSubmit = true }: useInputInterface) => {
   const [state, dispatch] = useReducer(reducer, defaultValue, getInitialState);
 
   const handleChange = useCallback(({ target: { value } }) => dispatch({ payload: { value } }), [dispatch]);
 
   const handleSubmit = useCallback(
     event => {
-      if (event) event.preventDefault();
+      if (event && preventDefaultEventOnSubmit) event.preventDefault();
 
       const validationError = getValidationError(state.value, valudationSchema);
 
@@ -20,7 +20,7 @@ const useInput = ({ defaultValue = '', valudationSchema, callback, resetOnCallba
       }
       dispatch({ type: 'validate', payload: validationError });
     },
-    [dispatch, state, valudationSchema, callback, resetOnCallback, defaultValue],
+    [dispatch, state, valudationSchema, callback, resetOnCallback, defaultValue, preventDefaultEventOnSubmit],
   );
 
   const updateDefaultValue = useCallback(value => dispatch({ payload: { value } }), [dispatch]);
