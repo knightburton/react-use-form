@@ -9,7 +9,7 @@ export const getErrorString = (value: ValueType, error?: ErrorType): string => {
 export const getInvalidValidatorIndex = (value: ValueType, validators: ValidatorType[]): InvalidValidatorIndexType => {
   const invalidIndex = validators.findIndex(validator => {
     if (typeof validator === 'function') return !validator(value);
-    if (validator instanceof RegExp) return !validator.test(value);
+    if (validator instanceof RegExp && typeof value === 'string') return !validator.test(value);
     return false;
   });
 
@@ -18,7 +18,8 @@ export const getInvalidValidatorIndex = (value: ValueType, validators: Validator
 
 export const getValidationError = (value: ValueType, validationSchema: ValidationSchemaType = {}): string => {
   const { required, requiredError, validators, errors } = validationSchema;
-  if (required && (!REQUIRED_REGEX.test(value) || value === null || value === undefined)) return getErrorString(value, requiredError) || REQUIRED_ERROR;
+  if (required && ((typeof value === 'string' && !REQUIRED_REGEX.test(value)) || value === null || value === undefined))
+    return getErrorString(value, requiredError) || REQUIRED_ERROR;
   if (validators && value) {
     const invalidIndex = getInvalidValidatorIndex(value, validators);
     return invalidIndex !== null ? getErrorString(value, errors?.[invalidIndex]) : '';

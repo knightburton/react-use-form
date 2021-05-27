@@ -4,7 +4,8 @@ enum ActionTypes {
   Change = 'CHANGE',
 }
 
-type ValueType = string | number | object | array | boolean | Date | null;
+type ArrayType = any[];
+type ValueType = string | number | object | ArrayType | boolean | Date | null | undefined;
 type ValidatorType = ((value: ValueType) => boolean) | RegExp;
 type ErrorType = ((value: ValueType) => string) | string;
 type ValidationSchemaType = {
