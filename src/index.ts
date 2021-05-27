@@ -2,10 +2,20 @@ import { useReducer, useCallback } from 'react';
 import { useInputInterface } from './interfaces/index.interface';
 import { getValidationError, getInitialState, reducer } from './helpers';
 
-const useInput = ({ defaultValue = '', valudationSchema, onSubmit, resetOnSubmit = false, preventDefaultEventOnSubmit = true }: useInputInterface) => {
+const useInput = ({
+  defaultValue = '',
+  valudationSchema,
+  onSubmit,
+  resetOnSubmit = false,
+  useEventTargetValueOnChange = true,
+  preventDefaultEventOnSubmit = true,
+}: useInputInterface) => {
   const [state, dispatch] = useReducer(reducer, defaultValue, getInitialState);
 
-  const handleChange = useCallback(({ target: { value } }) => dispatch({ type: ActionTypes.Change, payload: value }), [dispatch]);
+  const handleChange = useCallback(
+    arg => dispatch({ type: ActionTypes.Change, payload: useEventTargetValueOnChange ? arg?.target?.value : arg }),
+    [dispatch, useEventTargetValueOnChange],
+  );
 
   const handleSubmit = useCallback(
     event => {

@@ -3,5 +3,6 @@ export interface useInputInterface {
   valudationSchema: ValidationSchemaType;
   onSubmit: CallbackType;
   resetOnSubmit: boolean;
+  useEventTargetValueOnChange: boolean;
   preventDefaultEventOnSubmit: boolean;
 };
