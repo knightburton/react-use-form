@@ -1,7 +1,7 @@
 export interface useInputInterface {
-  defaultValue?: ValueType;
-  valudationSchema?: ValidationSchemaType;
-  onSubmit?: CallbackType;
+  defaultValue?: Value;
+  valudationSchema?: ValidationSchema;
+  onSubmit?: OnSubmit;
   resetOnSubmit?: boolean;
   useEventTargetValueOnChange?: boolean;
   preventDefaultEventOnSubmit?: boolean;

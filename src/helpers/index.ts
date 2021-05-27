@@ -1,12 +1,12 @@
 import { REQUIRED_REGEX, REQUIRED_ERROR } from '../constants';
 
-export const getErrorString = (value: ValueType, error?: ErrorType): string => {
+export const getErrorString = (value: Value, error?: ValidationError): string => {
   if (typeof error === 'function') return error(value);
   if (typeof error === 'string') return error;
   return '';
 };
 
-export const getInvalidValidatorIndex = (value: ValueType, validators: ValidatorType[]): InvalidValidatorIndexType => {
+export const getInvalidValidatorIndex = (value: Value, validators: Validator[]): InvalidValidatorIndex => {
   const invalidIndex = validators.findIndex(validator => {
     if (typeof validator === 'function') return !validator(value);
     if (validator instanceof RegExp && typeof value === 'string') return !validator.test(value);
@@ -16,7 +16,7 @@ export const getInvalidValidatorIndex = (value: ValueType, validators: Validator
   return invalidIndex !== -1 ? invalidIndex : null;
 };
 
-export const getValidationError = (value: ValueType, validationSchema: ValidationSchemaType = {}): string => {
+export const getValidationError = (value: Value, validationSchema: ValidationSchema): string => {
   const { required, requiredError, validators, errors } = validationSchema;
   if (required && ((typeof value === 'string' && !REQUIRED_REGEX.test(value)) || value === null || value === undefined))
     return getErrorString(value, requiredError) || REQUIRED_ERROR;
@@ -27,9 +27,9 @@ export const getValidationError = (value: ValueType, validationSchema: Validatio
   return '';
 };
 
-export const getInitialState = (initialValue: ValueType): StateType => ({ value: initialValue || '', error: '' });
+export const getInitialState = (initialValue: Value): State => ({ value: initialValue || '', error: '' });
 
-export const reducer = (state: StateType, action: ActionsType) => {
+export const reducer = (state: State, action: Actions) => {
   switch (action.type) {
     case ActionTypes.Reset:
       return getInitialState(action.payload);

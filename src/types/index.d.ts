@@ -4,28 +4,28 @@ enum ActionTypes {
   Change = 'CHANGE',
 }
 
-type ArrayType = any[];
-type ValueType = string | number | object | ArrayType | boolean | Date | null | undefined;
-type ValidatorType = ((value: ValueType) => boolean) | RegExp;
-type ErrorType = ((value: ValueType) => string) | string;
-type ValidationSchemaType = {
+type GenericArray = any[];
+type Value = string | number | object | GenericArray | boolean | Date | null | undefined;
+type Validator = ((value: Value) => boolean) | RegExp;
+type ValidationError = ((value: Value) => string) | string;
+type ValidationSchema = {
   required?: boolean;
-  requiredError?: ErrorType;
-  validators?: ValidatorType[];
-  errors?: ErrorType[];
+  requiredError?: ValidationError;
+  validators?: Validator[];
+  errors?: ValidationError[];
 };
-type CallbackType = (value: ValueType) => void;
-type InvalidValidatorIndexType = number | null;
-type StateType = {
-  value: ValueType;
+type OnSubmit = (value: Value) => void;
+type InvalidValidatorIndex = number | null;
+type State = {
+  value: Value;
   error: string;
 };
 type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key; } : { type: Key; payload: M[Key] };
 };
-type PayloadType = {
-  [ActionTypes.Reset]: ValueType;
+type Payload = {
+  [ActionTypes.Reset]: Value;
   [ActionTypes.Validate]: string;
-  [ActionTypes.Change]: ValueType;
+  [ActionTypes.Change]: Value;
 };
-type ActionsType = ActionMap<PayloadType>[keyof ActionMap<PayloadType>];
+type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
