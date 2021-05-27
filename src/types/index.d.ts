@@ -20,7 +20,7 @@ type StateType = {
   error: string;
 };
 type ActionMap<M extends { [index: string]: any }> = {
-  [Key in keyof M]: { type: Key; payload: M[Key] };
+  [Key in keyof M]: M[Key] extends undefined ? { type: Key; } : { type: Key; payload: M[Key] };
 };
 type PayloadType = {
   [ActionTypes.Reset]: ValueType;

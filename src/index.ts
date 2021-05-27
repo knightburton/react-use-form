@@ -25,7 +25,13 @@ const useInput = ({ defaultValue = '', valudationSchema, onSubmit, resetOnSubmit
 
   const updateDefaultValue = useCallback(value => dispatch({ type: ActionTypes.Change, payload: value }), [dispatch]);
 
-  return [state.value, state.error, handleChange, handleSubmit, updateDefaultValue];
+  return {
+    value: state.value,
+    error: state.error,
+    handleChange,
+    handleSubmit,
+    updateDefaultValue,
+  };
 };
 
 export default useInput;
