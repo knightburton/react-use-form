@@ -1,6 +1,6 @@
 import { useReducer, useCallback } from 'react';
 import { useInputInterface } from './interfaces/index.interface';
-import { getValidationError, getInitialState, reducer } from './helpers';
+import { getValidationError, initalizer, reducer } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 
 const useInput = ({
@@ -10,17 +10,17 @@ const useInput = ({
   resetOnSubmit = DEFAULT_OPTIONS.RESET_ON_SUBMIT,
   useEventTargetValueOnChange = DEFAULT_OPTIONS.USE_EVENT_TARGET_VALUE_ON_CHANGE,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
-}: useInputInterface) => {
-  const [state, dispatch] = useReducer(reducer, defaultValue, getInitialState);
+}: useInputInterface): UseInputReturn => {
+  const [state, dispatch] = useReducer<(state: State, action: Actions) => State, Value>(reducer, defaultValue, initalizer);
 
-  const handleChange = useCallback(
-    arg => dispatch({ type: ActionTypes.Change, payload: useEventTargetValueOnChange ? arg?.target?.value : arg }),
+  const handleChange = useCallback<HandleChangeHook>(
+    arg => dispatch({ type: ActionTypes.Change, payload: useEventTargetValueOnChange ? arg?.currentTarget?.value : arg }),
     [dispatch, useEventTargetValueOnChange],
   );
 
-  const handleSubmit = useCallback(
+  const handleSubmit = useCallback<HandleSubmitHook>(
     event => {
-      if (event && preventDefaultEventOnSubmit) event.preventDefault();
+      if (event && preventDefaultEventOnSubmit) event?.preventDefault();
 
       const validationError = getValidationError(state.value, valudationSchema);
 
@@ -34,7 +34,7 @@ const useInput = ({
     [dispatch, state, valudationSchema, onSubmit, resetOnSubmit, defaultValue, preventDefaultEventOnSubmit],
   );
 
-  const updateDefaultValue = useCallback(value => dispatch({ type: ActionTypes.Change, payload: value }), [dispatch]);
+  const updateDefaultValue = useCallback<UpdateDefaultValueHook>(value => dispatch({ type: ActionTypes.Change, payload: value }), [dispatch]);
 
   return {
     value: state.value,

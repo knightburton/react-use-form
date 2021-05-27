@@ -27,12 +27,12 @@ export const getValidationError = (value: Value, validationSchema: ValidationSch
   return '';
 };
 
-export const getInitialState = (initialValue: Value): State => ({ value: initialValue || '', error: '' });
+export const initalizer = (arg: Value): State => ({ value: arg || '', error: '' });
 
-export const reducer = (state: State, action: Actions) => {
+export const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
     case ActionTypes.Reset:
-      return getInitialState(action.payload);
+      return initalizer(action.payload);
     case ActionTypes.Validate:
       return { ...state, error: action.payload };
     case ActionTypes.Change:

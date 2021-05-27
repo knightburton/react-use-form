@@ -11,16 +11,7 @@
     "plugin:prettier/recommended",
     "prettier"
   ],
-  "plugins": [
-    "import",
-    "jest",
-    "jest-dom",
-    "testing-library",
-    "jsx-a11y",
-    "react",
-    "react-hooks",
-    "@typescript-eslint"
-  ],
+  "plugins": ["import", "jest", "jest-dom", "testing-library", "jsx-a11y", "react", "react-hooks", "@typescript-eslint"],
   "env": {
     "browser": true,
     "node": true,
@@ -37,19 +28,16 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json"]
   },
-  "ignorePatterns": [
-    "rollup.config.js"
-  ],
+  "ignorePatterns": ["rollup.config.js"],
   "settings": {
     "react": {
       "version": "16"
     }
   },
   "rules": {
+    "prettier/prettier": "error",
     "arrow-parens": ["error", "as-needed"],
     "comma-dangle": ["error", "always-multiline"],
     "function-call-argument-newline": ["error", "consistent"],
