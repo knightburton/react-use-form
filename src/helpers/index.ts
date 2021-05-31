@@ -1,12 +1,14 @@
 import { REQUIRED_REGEX, REQUIRED_ERROR } from '../constants';
+import { ActionTypes } from '../enums';
+import type { ValidationError, InvalidValidatorIndex, ValidationSchema, State, Actions, Validator } from '../types';
 
-export const getErrorString = (value: Value, error?: ValidationError): string => {
+export const getErrorString = <T>(value: T, error?: ValidationError<T>): string => {
   if (typeof error === 'function') return error(value);
   if (typeof error === 'string') return error;
   return '';
 };
 
-export const getInvalidValidatorIndex = (value: Value, validators: Validator[]): InvalidValidatorIndex => {
+export const getInvalidValidatorIndex = <T>(value: T, validators: Validator<T>[]): InvalidValidatorIndex => {
   const invalidIndex = validators.findIndex(validator => {
     if (typeof validator === 'function') return !validator(value);
     if (validator instanceof RegExp && typeof value === 'string') return !validator.test(value);
@@ -16,7 +18,7 @@ export const getInvalidValidatorIndex = (value: Value, validators: Validator[]):
   return invalidIndex !== -1 ? invalidIndex : null;
 };
 
-export const getValidationError = (value: Value, validationSchema: ValidationSchema): string => {
+export const getValidationError = <T>(value: T, validationSchema: ValidationSchema<T>): string => {
   const { required, requiredError, validators, errors } = validationSchema;
   if (required && ((typeof value === 'string' && !REQUIRED_REGEX.test(value)) || value === null || value === undefined))
     return getErrorString(value, requiredError) || REQUIRED_ERROR;
@@ -27,9 +29,9 @@ export const getValidationError = (value: Value, validationSchema: ValidationSch
   return '';
 };
 
-export const initalizer = (arg: Value): State => ({ value: arg || '', error: '' });
+export const initalizer = <T>(arg: T): State<T> => ({ value: arg, error: '' });
 
-export const reducer = (state: State, action: Actions): State => {
+export const reducer = <T>(state: State<T>, action: Actions<T>): State<T> => {
   switch (action.type) {
     case ActionTypes.Reset:
       return initalizer(action.payload);
