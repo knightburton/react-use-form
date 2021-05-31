@@ -3,7 +3,7 @@ import { UseInputInterface } from './interfaces/index.interface';
 import { getValidationError, initalizer, reducer } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
-import type { State, Actions, HandleChangeHook, HandleSubmitHook, UpdateDefaultValueHook, UseInputReturn } from './types';
+import type { State, Actions, HandleChangeHook, HandleSubmitHook, UpdateDefaultValueHook, UseInputPayload } from './types';
 
 const useInput = <T>({
   defaultValue = DEFAULT_OPTIONS.DEFAULT_VALUE,
@@ -12,7 +12,7 @@ const useInput = <T>({
   resetOnSubmit = DEFAULT_OPTIONS.RESET_ON_SUBMIT,
   useEventTargetValueOnChange = DEFAULT_OPTIONS.USE_EVENT_TARGET_VALUE_ON_CHANGE,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
-}: UseInputInterface<T> = {}): UseInputReturn<T> => {
+}: UseInputInterface<T> = {}): UseInputPayload<T> => {
   const [state, dispatch] = useReducer<Reducer<State<T>, Actions<T>>, T>(reducer, <T>defaultValue, initalizer);
 
   const handleChange = useCallback<HandleChangeHook>(

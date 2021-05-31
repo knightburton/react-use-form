@@ -18,7 +18,7 @@ export type State<T> = {
 export type HandleChangeHook = (event?: any) => void;
 export type HandleSubmitHook = (event?: any) => void;
 export type UpdateDefaultValueHook = (value?: any) => void;
-export type UseInputReturn<T> = {
+export type UseInputPayload<T> = {
   value: T;
   error: ValidationError<T>;
   handleChange: HandleChangeHook;
