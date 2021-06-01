@@ -45,7 +45,27 @@ export default App;
 For more detailed example check the [example](./example) directory.
 
 ### Development
+Local development is broken into two parts (ideally using two terminal tabs).
+
+First, run rollup to watch your `src/` module and automatically recompile it into `dist/` whenever you make changes.
+```bash
+# Assume that you are in the project main folder
+$ npm i
+$ npm start
+```
+The second part will be running the `example/` create-react-app that's linked to the local version of your module.
+```bash
+# Assume that you are in the project main folder
+$ cd example
+$ npm i
+$ npm start
+```
 
 ### Contributing
+First off all, thanks for taking the time to contribute! :muscle:
+
+Before any action, please visit the [Code of Conduct](https://github.com/knightburton/react-use-input/blob/main/CODE_OF_CONDUCT.md) and [Contributing guideline](https://github.com/knightburton/react-use-input/blob/main/CONTRIBUTING.md) for more information.
 
 ### License
+
+`react-use-input` is Open Source software under the MIT license. Complete license and copyright information can be found within the [license](https://github.com/knightburton/react-use-input/blob/main/LICENSE).
