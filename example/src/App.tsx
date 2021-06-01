@@ -93,6 +93,7 @@ const App = () => {
   return (
     <div className="app">
       <h3>@knightburton/react-use-input</h3>
+      <p>React hook to handle controlled input change and validation.</p>
       <div className="container">
         <div className="item">
           <pre className="description">
