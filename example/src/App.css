@@ -4,6 +4,9 @@ body {
 
 .app {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .container {
@@ -15,28 +18,24 @@ body {
   align-content: flex-start;
 }
 
-.title {
-  padding: 0;
-  margin: 0 0 5px 0;
+.item {
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.item:not(:last-child) {
+  margin-right: 10px;
 }
 
 .description {
   color: rgba(0, 0, 0, 0.54);
-  padding: 0;
-  margin: 0 0 5px 0;
-}
-
-.card {
-  flex: 0 0 auto;
+  background-color: #ffffff;
+  border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
-  background-color: #ffffff;
-}
-
-.card:not(:last-child) {
-  margin-right: 10px;
+  flex-grow: 1;
 }
 
 .form {
@@ -46,7 +45,6 @@ body {
 .error {
   display: block;
   color: #ff0000;
-  margin-top: 5px;
 }
 
 .actions {
@@ -64,5 +62,5 @@ body {
 }
 
 .input {
-  width: 400px;
+  width: calc(100% - 5px);
 }
