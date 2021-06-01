@@ -32,11 +32,11 @@ const App = () => {
   });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <input type="text" id="text" name="text" value={value} onChange={handleChange} />
       {error && <p>{error}</p>}
-      <input type="submit" value="Submit" />
-    </form>
+      <input type="button" value="Submit" onClick={handleSubmit} />
+    </div>
   );
 };
 

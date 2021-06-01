@@ -99,28 +99,28 @@ const App = () => {
           <pre className="description">
             <code>{SIMPLE}</code>
           </pre>
-          <form onSubmit={simpleHandleSubmit} className="form">
+          <div className="form">
             {simpleError && <span className="error">{simpleError}</span>}
             <textarea id="text" name="text" className="input" value={simple} onChange={onSimpleChange} autoComplete="off" rows={4} />
             <div className="actions">
               <input type="button" value="Reset" className="reset" onClick={onSimpleReset} />
-              <input type="submit" value="Submit" className="submit" />
+              <input type="button" value="Submit" className="submit" onClick={simpleHandleSubmit} />
             </div>
-          </form>
+          </div>
         </div>
 
         <div className="item">
           <pre className="description">
             <code>{COMPLEX}</code>
           </pre>
-          <form onSubmit={complexHandleSubmit} className="form">
+          <div className="form">
             {complexError && <span className="error">{complexError}</span>}
             <textarea id="text" name="text" className="input" value={complex} onChange={onComplexChange} autoComplete="off" rows={4} />
             <div className="actions">
               <input type="button" value="Reset" className="reset" onClick={onComplexReset} />
-              <input type="submit" value="Submit" className="submit" />
+              <input type="button" value="Submit" className="submit" onClick={complexHandleSubmit} />
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
