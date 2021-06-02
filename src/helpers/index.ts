@@ -56,7 +56,7 @@ export const getValidationError = <T>(value: T, validationSchema: ValidationSche
  * @param arg Initial value.
  * @returns Initial state with value and error props.
  */
-export const initalizer = <T>(arg: T): State<T> => ({ value: arg, error: '' });
+export const initalizer = <T>(arg: T): State<T> => ({ value: arg, defaultValue: arg, error: '' });
 
 /**
  * Executes the incoming action on the previous state and creates a new one
@@ -69,11 +69,13 @@ export const initalizer = <T>(arg: T): State<T> => ({ value: arg, error: '' });
 export const reducer = <T>(state: State<T>, action: Actions<T>): State<T> => {
   switch (action.type) {
     case ActionTypes.Reset:
-      return initalizer(action.payload);
+      return initalizer(state.defaultValue);
     case ActionTypes.Validate:
-      return { ...state, error: action.payload };
+      return { ...state, error: action?.payload || '' };
     case ActionTypes.Change:
-      return { value: action.payload, error: '' };
+      return { ...state, value: action.payload as T, error: '' };
+    case ActionTypes.UpdateDefaultValue:
+      return initalizer(action?.payload as T);
     default:
       return state;
   }

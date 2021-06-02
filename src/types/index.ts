@@ -13,6 +13,7 @@ export type OnSubmit<T> = (value: T) => void;
 export type InvalidValidatorIndex = number | null;
 export type State<T> = {
   value: T;
+  defaultValue: T;
   error: string;
 };
 export type HandleChangeHook = (event?: any) => void;
@@ -26,11 +27,12 @@ export type UseInputPayload<T> = {
   updateDefaultValue: UpdateDefaultValueHook;
 };
 export type ActionMap<M extends { [index: string]: any }> = {
-  [Key in keyof M]: { type: Key; payload: M[Key] };
+  [Key in keyof M]: { type: Key; payload?: M[Key] };
 };
 export type Payload<T> = {
-  [ActionTypes.Reset]: T;
+  [ActionTypes.Reset]: undefined;
   [ActionTypes.Validate]: string;
   [ActionTypes.Change]: T;
+  [ActionTypes.UpdateDefaultValue]: T;
 };
 export type Actions<T> = ActionMap<Payload<T>>[keyof ActionMap<Payload<T>>];

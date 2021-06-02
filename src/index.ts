@@ -18,7 +18,7 @@ const useInput = <T>({
   useEventTargetValueOnChange = DEFAULT_OPTIONS.USE_EVENT_TARGET_VALUE_ON_CHANGE,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
 }: UseInputInterface<T> = {}): UseInputPayload<T> => {
-  const [state, dispatch] = useReducer<Reducer<State<T>, Actions<T>>, T>(reducer, <T>defaultValue, initalizer);
+  const [state, dispatch] = useReducer<Reducer<State<T>, Actions<T>>, T>(reducer, defaultValue as T, initalizer);
 
   const handleChange = useCallback<HandleChangeHook>(
     event => {
@@ -35,15 +35,15 @@ const useInput = <T>({
 
       if (!validationError) {
         if (onSubmit) onSubmit(state.value);
-        if (resetOnSubmit) dispatch({ type: ActionTypes.Reset, payload: <T>defaultValue });
+        if (resetOnSubmit) dispatch({ type: ActionTypes.Reset });
         return;
       }
       dispatch({ type: ActionTypes.Validate, payload: validationError });
     },
-    [dispatch, state, valudationSchema, onSubmit, resetOnSubmit, defaultValue, preventDefaultEventOnSubmit],
+    [dispatch, state, valudationSchema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
-  const updateDefaultValue = useCallback<UpdateDefaultValueHook>(value => dispatch({ type: ActionTypes.Change, payload: value }), [dispatch]);
+  const updateDefaultValue = useCallback<UpdateDefaultValueHook>(value => dispatch({ type: ActionTypes.UpdateDefaultValue, payload: value }), [dispatch]);
 
   return {
     value: state.value,
