@@ -44,6 +44,36 @@ export default App;
 ```
 For more detailed example check the [example](./example) directory.
 
+### Output
+The hook returns an object with the following props.
+| Prop name | Type | Description |
+| --- | --- | --- |
+| value | `generic` | Stateful value |
+| error | `string` | Stateful validation error string |
+| handleChange | `function` | The function is used to update the value. It accepts a direct new value or input change event, depends on the `useEventTargetValueOnChange` option. |
+| handleSubmit | `function` | The function is used to submit the value for validation. It can accept an event, the default behaviour of that can be prevented with the `preventDefaultEventOnSubmit` option. |
+| updateDefaultValue | `function` | The function is used to update the default value. It accepts any type of value. |
+
+### Options
+The hook behaviour can be modified with the following props.
+| Prop name | Type | Default Value | Description |
+| --- | --- | --- | --- |
+| defaultValue | `generic` | `undefined` | Defines the initial stateful value. |
+| valudationSchema | `object` | `{}` | Object of validation rules and corresponding errors. Check the prop definition [here](https://github.com/knightburton/react-use-input#validation-schema). |
+| onSubmit | `function` | `undefined` | Function called when the validation was successful after `handleSubmit` triggered. |
+| resetOnSubmit | `boolean` | `false` | Whether the value should be reseted to the default value after successful `onSubmit` or not. |
+| useEventTargetValueOnChange | `boolean` | `true` | Whether the `handleChange` should destruct the value from the input event or not. |
+| preventDefaultEventOnSubmit | `boolean` | `true` | Whether the `handleSubmit` event default behaviour should be prevented (if event provided) or not. |
+
+### Validation Schema
+The prop definition of validation rules and errors.
+| Prop name | Type | Description |
+| --- | --- | --- |
+| required | `boolean` | Whether the value required or not. |
+| requiredError | `string` or `function` | The error message in case of validation failed on `required`. If this is a function the argument will be the actual stateful value and should return a `string`. Default message is `This field is required!`. |
+| validators | `mixed` of `RegExp[]` and `function[]` | The validation rules that will be used when the handleSubmit triggered. If the array item is a function the argument will be the actual stateful value and should return a `boolean` value. |
+| errors | `mixed` of `string[]` and `function[]` | The validation error messages that will be used when the handleSubmit triggered and a validator is failed. The sort of messages should be correspond to the validators. If the array item is a function the argument will be the actual stateful value and should return a `string`. |
+
 ### Development
 Local development is broken into two parts (ideally using two terminal tabs).
 
