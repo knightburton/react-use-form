@@ -18,7 +18,7 @@ const {
   preventDefaultEventOnSubmit: true,
   useEventTargetValueOnChange: true,
 });
-const onReset = updateDefaultValue('');
+const onUpdate = updateDefaultValue('Updated');
 `;
 
 const COMPLEX = `
@@ -44,11 +44,11 @@ const {
     ],
   },
   onSubmit: onSubmit,
-  resetOnSubmit: false,
+  resetOnSubmit: true,
   preventDefaultEventOnSubmit: true,
   useEventTargetValueOnChange: true,
 });
-const onReset = updateDefaultValue('Complex');`;
+const onUpdate = updateDefaultValue('Updated Complex');`;
 
 const App = () => {
   const onSimpleSubmit = useCallback(simple => console.log('Simple:', simple), []);
@@ -66,7 +66,7 @@ const App = () => {
     preventDefaultEventOnSubmit: true,
     useEventTargetValueOnChange: true,
   });
-  const onSimpleReset = useCallback(() => updateSimpleDefaultValue(''), [updateSimpleDefaultValue]);
+  const onSimpleUpdateDefaultValue = useCallback(() => updateSimpleDefaultValue('Updated'), [updateSimpleDefaultValue]);
 
   const onComplexSubmit = useCallback(complex => console.log('Complex:', complex), []);
   const {
@@ -75,7 +75,7 @@ const App = () => {
     handleChange: onComplexChange,
     handleSubmit: complexHandleSubmit,
     updateDefaultValue: updateComplexDefaultValue,
-  } = useInput({
+  } = useInput<string>({
     defaultValue: 'Complex',
     valudationSchema: {
       required: true,
@@ -88,7 +88,7 @@ const App = () => {
     preventDefaultEventOnSubmit: true,
     useEventTargetValueOnChange: true,
   });
-  const onComplexReset = useCallback(() => updateComplexDefaultValue('Complex'), [updateComplexDefaultValue]);
+  const onComplexUpdateDefaultValue = useCallback(() => updateComplexDefaultValue('Updated Complex'), [updateComplexDefaultValue]);
 
   return (
     <div className="app">
@@ -103,7 +103,7 @@ const App = () => {
             {simpleError && <span className="error">{simpleError}</span>}
             <textarea id="text" name="text" className="input" value={simple} onChange={onSimpleChange} autoComplete="off" rows={4} />
             <div className="actions">
-              <input type="button" value="Reset" className="reset" onClick={onSimpleReset} />
+              <input type="button" value="Update default value" className="update" onClick={onSimpleUpdateDefaultValue} />
               <input type="button" value="Submit" className="submit" onClick={simpleHandleSubmit} />
             </div>
           </div>
@@ -117,7 +117,7 @@ const App = () => {
             {complexError && <span className="error">{complexError}</span>}
             <textarea id="text" name="text" className="input" value={complex} onChange={onComplexChange} autoComplete="off" rows={4} />
             <div className="actions">
-              <input type="button" value="Reset" className="reset" onClick={onComplexReset} />
+              <input type="button" value="Update default value" className="update" onClick={onComplexUpdateDefaultValue} />
               <input type="button" value="Submit" className="submit" onClick={complexHandleSubmit} />
             </div>
           </div>
