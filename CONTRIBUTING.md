@@ -2,7 +2,7 @@
 
 First off all, thanks for taking the time to contribute! :muscle:
 
-The following is a set of guidelines for contributing to react-use-input.
+The following is a set of guidelines for contributing to react-use-form.
 These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 ### Table Of Contents
@@ -34,7 +34,7 @@ Fill out the required template, the information it asks for helps us resolve iss
 **Note**: If you find a Closed issue that seems like it is the same thing that you're experiencing,
 open a new issue and include a link to the original issue in the body of your new one.
 
-[1]: https://github.com/knightburton/react-use-input/issues
+[1]: https://github.com/knightburton/react-use-form/issues
 
 #### How to submit a good bug report
 
@@ -51,7 +51,7 @@ Provide the following information by filling in the [bug report template][2].
   * **Did the problem start happening recently** or was this always a problem?
   * **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
 
-[2]: https://github.com/knightburton/react-use-input/blob/main/.github/ISSUE_TEMPLATE/bug_report.md
+[2]: https://github.com/knightburton/react-use-form/blob/main/.github/ISSUE_TEMPLATE/bug_report.md
 
 ### Suggesting Enhancements
 
@@ -59,8 +59,8 @@ Before creating enhancement suggestions, please check the [issues][3] or [pull r
 When you are creating an enhancement suggestion, please include as many details as possible.
 Fill in the template, including the steps that you imagine you would take if the feature you're requesting existed.
 
-[3]: https://github.com/knightburton/react-use-input/issues
-[4]: https://github.com/knightburton/react-use-input/pulls
+[3]: https://github.com/knightburton/react-use-form/issues
+[4]: https://github.com/knightburton/react-use-form/pulls
 
 #### How to submit a good enhancements suggestion
 
@@ -69,7 +69,7 @@ Create an issue in repository and provide the following information by filling i
 * **Describe the solution you'd like** a clear and concise description of what you want to happen.
 * **Describe alternatives you've considered** if the original idea is not possible for some reason.
 
-[5]: https://github.com/knightburton/react-use-input/blob/main/.github/ISSUE_TEMPLATE/feature_request.md
+[5]: https://github.com/knightburton/react-use-form/blob/main/.github/ISSUE_TEMPLATE/feature_request.md
 
 ### Styleguides
 

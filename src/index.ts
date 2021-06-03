@@ -6,11 +6,11 @@ import { ActionTypes } from './enums';
 import type { State, Actions, HandleChangeHook, HandleSubmitHook, UpdateDefaultValueHook, UseInputPayload } from './types';
 
 /**
- * `useInput` returns with stateful value, error and functions to handle change, submit and default value update.
+ * `useForm` returns with stateful value, error and functions to handle change, submit and default value update.
  * Preferable to use on a single input field which does not have complex logic or multiple sub-values.
  * @link https://github.com/knightburton/react-use-input#readme
  */
-const useInput = <T>({
+const useForm = <T>({
   defaultValue = DEFAULT_OPTIONS.DEFAULT_VALUE,
   valudationSchema = DEFAULT_OPTIONS.VALIDATION_SCHEMA,
   onSubmit = DEFAULT_OPTIONS.ON_SUBMIT,
@@ -54,4 +54,4 @@ const useInput = <T>({
   };
 };
 
-export default useInput;
+export default useForm;

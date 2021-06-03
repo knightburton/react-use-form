@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import useInput from '@knightburton/react-use-input';
+import useForm from '@knightburton/react-use-form';
 import './App.css';
 
 const SIMPLE = `
@@ -58,7 +58,7 @@ const App = () => {
     handleChange: onSimpleChange,
     handleSubmit: simpleHandleSubmit,
     updateDefaultValue: updateSimpleDefaultValue,
-  } = useInput({
+  } = useForm({
     defaultValue: '',
     valudationSchema: {},
     onSubmit: onSimpleSubmit,
@@ -75,7 +75,7 @@ const App = () => {
     handleChange: onComplexChange,
     handleSubmit: complexHandleSubmit,
     updateDefaultValue: updateComplexDefaultValue,
-  } = useInput<string>({
+  } = useForm<string>({
     defaultValue: 'Complex',
     valudationSchema: {
       required: true,
@@ -92,8 +92,8 @@ const App = () => {
 
   return (
     <div className="app">
-      <h3>@knightburton/react-use-input</h3>
-      <p>React hook to handle controlled input change and validation.</p>
+      <h3>@knightburton/react-use-form</h3>
+      <p>React hook to handle form change and validation.</p>
       <div className="container">
         <div className="item">
           <pre className="description">

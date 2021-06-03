@@ -1,14 +1,14 @@
 {
-  "name": "@knightburton/react-use-input",
+  "name": "@knightburton/react-use-form",
   "version": "1.0.0",
-  "description": "React hook to handle input change and validation.",
-  "homepage": "https://github.com/knightburton/react-use-input#readme",
+  "description": "React hook to handle form change and validation.",
+  "homepage": "https://github.com/knightburton/react-use-form#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/knightburton/react-use-input.git"
+    "url": "git+https://github.com/knightburton/react-use-form.git"
   },
   "bugs": {
-    "url": "https://github.com/knightburton/react-use-input/issues"
+    "url": "https://github.com/knightburton/react-use-form/issues"
   },
   "author": "Imre Kiss",
   "license": "MIT",
@@ -17,9 +17,9 @@
     "react",
     "react-hooks",
     "typescript",
-    "input",
-    "input-validation",
-    "input-handler"
+    "form",
+    "form-validation",
+    "form-handler"
   ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
