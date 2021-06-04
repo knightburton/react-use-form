@@ -1,8 +1,8 @@
-import type { ValidationSchema, OnSubmit } from '../types';
+import type { Schema, ValidationSchema, OnSubmit } from '../types';
 
-export interface UseInputInterface<T> {
-  defaultValue?: T;
-  valudationSchema?: ValidationSchema<T>;
+export interface IUseForm<T> {
+  schema?: Schema<T>;
+  validationSchema?: ValidationSchema<T>;
   onSubmit?: OnSubmit<T>;
   resetOnSubmit?: boolean;
   useEventTargetValueOnChange?: boolean;

@@ -1,81 +1,74 @@
+import { Dispatch } from 'react';
 import { REQUIRED_REGEX, REQUIRED_ERROR } from '../constants';
 import { ActionTypes } from '../enums';
-import type { ValidationError, InvalidValidatorIndex, ValidationSchema, State, Actions, Validator } from '../types';
+import type { Schema, ValidationObject, ValidationSchema, ValidationSchemaItem, ValidatorError, State, Actions, Validator } from '../types';
 
-/**
- * Gets the actual value and the error and returns the final error string.
- *
- * @param value Actual state value to hand over function bsed errors.
- * @param error Actual string or function that returns with an error string.
- * @returns Error string.
- */
-export const getErrorString = <T>(value: T, error?: ValidationError<T>): string => {
-  if (typeof error === 'function') return error(value);
+export const getValidatorError = <T>(value: keyof T, state: State<T>, error?: ValidatorError<T, keyof T>): string => {
+  if (typeof error === 'function') return error(value, state);
   if (typeof error === 'string') return error;
   return '';
 };
 
-/**
- * Returns the index of the validator function or regexp that is failing on the actual state value.
- *
- * @param value Actual state value to hand over to the given validators.
- * @param validators List of functions or regexps to check the validity of the actual state value.
- * @returns Invalid validator index number or null.
- */
-export const getInvalidValidatorIndex = <T>(value: T, validators: Validator<T>[]): InvalidValidatorIndex => {
-  const invalidIndex = validators.findIndex(validator => {
-    if (typeof validator === 'function') return !validator(value);
-    if (validator instanceof RegExp && typeof value === 'string') return !validator.test(value);
+export const executeValidators = <T>(value: keyof T, state: State<T>, validators: Validator<T, keyof T>[]): string => {
+  const invalidValidator = validators.find(({ rule }) => {
+    if (typeof rule === 'function') return !rule(value, state);
+    if (rule instanceof RegExp && typeof value === 'string') return !rule.test(value);
     return false;
   });
 
-  return invalidIndex !== -1 ? invalidIndex : null;
+  return invalidValidator?.error ? getValidatorError(value, state, invalidValidator.error) : '';
 };
 
-/**
- * Returns with the error that the user provided for the corresponding validator based on array index.
- *
- * @param value Actual state value to work with.
- * @param validationSchema Validators and errors list to work with.
- * @returns Validation error string or empty string.
- */
-export const getValidationError = <T>(value: T, validationSchema: ValidationSchema<T>): string => {
-  const { required, requiredError, validators, errors } = validationSchema;
+export const validateValue = <T>(value: keyof T, validationSchema: ValidationSchemaItem<T, keyof T>, state: State<T>): string => {
+  const { required, requiredError, validators } = validationSchema;
   if (required && ((typeof value === 'string' && !REQUIRED_REGEX.test(value)) || value === null || value === undefined))
-    return getErrorString(value, requiredError) || REQUIRED_ERROR;
-  if (validators && value) {
-    const invalidIndex = getInvalidValidatorIndex(value, validators);
-    return invalidIndex !== null ? getErrorString(value, errors?.[invalidIndex]) : '';
-  }
+    return getValidatorError(value, state, requiredError) || REQUIRED_ERROR;
+  if (validators?.length && value) return executeValidators(value, state, validators);
   return '';
 };
 
-/**
- * Returns or resets the initial state based on the given initial value.
- *
- * @param arg Initial value.
- * @returns Initial state with value and error props.
- */
-export const initalizer = <T>(arg: T): State<T> => ({ value: arg, defaultValue: arg, error: '' });
+export const validateState = <T>(state: State<T>, validationSchema: ValidationSchema<T>, dispatch: Dispatch<Actions<T>>) => {
+  const { validatedState, invalid }: ValidationObject<T> = Object.keys(state).reduce(
+    (o: ValidationObject<T>, key: string): ValidationObject<T> => {
+      const error: string = validateValue<T>(state[key].value, validationSchema[key], state);
+      return {
+        validatedState: {
+          ...o.validatedState,
+          [key]: {
+            ...state[key],
+            error,
+          },
+        },
+        invalid: !!error,
+      };
+    },
+    {
+      validatedState: state,
+      invalid: false,
+    },
+  );
+
+  dispatch({ type: ActionTypes.Validate, payload: validatedState });
+  return invalid;
+};
 
 /**
- * Executes the incoming action on the previous state and creates a new one
- * or keep it in case of non matching action.
+ * Returns or resets the initial state based on the given schema.
  *
- * @param state Previous state.
- * @param action Action to execute.
- * @returns A new state.
+ * @param schema State schema.
+ * @returns Initial state schema with additional props.
  */
+export const initalizer = <T>(schema: Schema<T>): State<T> =>
+  Object.keys(schema).reduce(
+    (o: State<T>, key: string) => ({
+      ...o,
+      [key]: { value: schema[key], error: '' },
+    }),
+    {},
+  );
+
 export const reducer = <T>(state: State<T>, action: Actions<T>): State<T> => {
   switch (action.type) {
-    case ActionTypes.Reset:
-      return initalizer(state.defaultValue);
-    case ActionTypes.Validate:
-      return { ...state, error: action?.payload || '' };
-    case ActionTypes.Change:
-      return { ...state, value: action.payload as T, error: '' };
-    case ActionTypes.UpdateDefaultValue:
-      return initalizer(action?.payload as T);
     default:
       return state;
   }

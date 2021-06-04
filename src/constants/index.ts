@@ -2,7 +2,7 @@ export const REQUIRED_REGEX = /\S/;
 export const REQUIRED_ERROR = 'This field is required!';
 
 export const DEFAULT_OPTIONS = {
-  DEFAULT_VALUE: undefined,
+  SCHEMA: {},
   VALIDATION_SCHEMA: {},
   ON_SUBMIT: undefined,
   RESET_ON_SUBMIT: false,

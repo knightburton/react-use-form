@@ -1,38 +1,41 @@
 import { ActionTypes } from '../enums';
 
-export type GenericArray = any[];
-export type Validator<T> = ((value: T) => boolean) | RegExp;
-export type ValidationError<T> = ((value: T) => string) | string;
-export type ValidationSchema<T> = {
-  required?: boolean;
-  requiredError?: ValidationError<T>;
-  validators?: Validator<T>[];
-  errors?: ValidationError<T>[];
-};
-export type OnSubmit<T> = (value: T) => void;
-export type InvalidValidatorIndex = number | null;
+export type Schema<T> = { [key: string]: T };
 export type State<T> = {
-  value: T;
-  defaultValue: T;
-  error: string;
+  [Key in keyof T]?: { value: T[Key]; error: string };
 };
+export type ValidatorRule<T, ValueT> = ((value: ValueT, state: State<T>) => boolean) | RegExp;
+export type ValidatorError<T, ValueT> = ((value: ValueT, state: State<T>) => string) | string;
+export type ValidationObject<T> = {
+  validatedState: State<T>;
+  invalid: boolean;
+};
+export type Validator<T, ValueT> = {
+  rule: ValidatorRule<T, ValueT>;
+  error: ValidatorError<T, ValueT>;
+};
+export type ValidationSchemaItem<T, ItemT> = {
+  required?: boolean;
+  requiredError?: string;
+  validators?: Validator<T, ItemT>[];
+};
+export type ValidationSchema<T> = {
+  [Key in keyof T]?: ValidationSchemaItem<T, T[Key]>;
+};
+export type OnSubmit<T> = (state: State<T>) => void;
 export type HandleChangeHook = (event?: any) => void;
 export type HandleSubmitHook = (event?: any) => void;
-export type UpdateDefaultValueHook = (value?: any) => void;
-export type UseInputPayload<T> = {
-  value: T;
-  error: ValidationError<T>;
+export type UseFormOutput<T> = {
+  state: State<T>;
   handleChange: HandleChangeHook;
   handleSubmit: HandleSubmitHook;
-  updateDefaultValue: UpdateDefaultValueHook;
 };
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: { type: Key; payload?: M[Key] };
 };
 export type Payload<T> = {
   [ActionTypes.Reset]: undefined;
-  [ActionTypes.Validate]: string;
-  [ActionTypes.Change]: T;
-  [ActionTypes.UpdateDefaultValue]: T;
+  [ActionTypes.Validate]: State<T>;
+  [ActionTypes.Change]: { key: string; value: T };
 };
 export type Actions<T> = ActionMap<Payload<T>>[keyof ActionMap<Payload<T>>];
