@@ -5,15 +5,14 @@ import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
 import type { State, Actions, Schema, HandleChangeHook, HandleSubmitHook, UseFormOutput } from './types';
 
-const useForm = <T>({
+const useForm = <FieldTypes>({
   schema = DEFAULT_OPTIONS.SCHEMA,
-  validationSchema = DEFAULT_OPTIONS.VALIDATION_SCHEMA,
   onSubmit = DEFAULT_OPTIONS.ON_SUBMIT,
   resetOnSubmit = DEFAULT_OPTIONS.RESET_ON_SUBMIT,
   // useEventTargetValueOnChange = DEFAULT_OPTIONS.USE_EVENT_TARGET_VALUE_ON_CHANGE,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
-}: IUseForm<T> = {}): UseFormOutput<T> => {
-  const [state, dispatch] = useReducer<Reducer<State<T>, Actions<T>>, Schema<T>>(reducer, schema, initalizer);
+}: IUseForm<FieldTypes> = {}): UseFormOutput<FieldTypes> => {
+  const [state, dispatch] = useReducer<Reducer<State<FieldTypes>, Actions<FieldTypes>>, Schema<FieldTypes>>(reducer, schema, initalizer);
 
   const handleChange = useCallback<HandleChangeHook>(
     event => {
@@ -27,14 +26,14 @@ const useForm = <T>({
     event => {
       if (event && preventDefaultEventOnSubmit) event?.preventDefault();
 
-      const isStateValid = validateState(state, validationSchema, dispatch);
+      const isStateValid = validateState(dispatch);
 
       if (isStateValid) {
         if (onSubmit) onSubmit(state);
         if (resetOnSubmit) dispatch({ type: ActionTypes.Reset });
       }
     },
-    [dispatch, state, validationSchema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
+    [dispatch, state, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
   return {

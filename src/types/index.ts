@@ -1,41 +1,40 @@
 import { ActionTypes } from '../enums';
 
-export type Schema<T> = { [key: string]: T };
-export type State<T> = {
-  [Key in keyof T]?: { value: T[Key]; error: string };
+export type State<FieldTypes> = {
+  [Key in keyof FieldTypes]?: { value: FieldTypes[Key]; error: string; };
 };
-export type ValidatorRule<T, ValueT> = ((value: ValueT, state: State<T>) => boolean) | RegExp;
-export type ValidatorError<T, ValueT> = ((value: ValueT, state: State<T>) => string) | string;
-export type ValidationObject<T> = {
-  validatedState: State<T>;
-  invalid: boolean;
+export type ValidatorRule<Value, FieldTypes> = ((value: Value, state: State<FieldTypes>) => boolean) | RegExp;
+export type ValidatorError<Value, FieldTypes> = ((value: Value, state: State<FieldTypes>) => string) | string;
+export type Validator<Value, FieldTypes> = {
+  rule: ValidatorRule<Value, FieldTypes>;
+  error: ValidatorError<Value, FieldTypes>;
 };
-export type Validator<T, ValueT> = {
-  rule: ValidatorRule<T, ValueT>;
-  error: ValidatorError<T, ValueT>;
-};
-export type ValidationSchemaItem<T, ItemT> = {
+export type SchemaItem<Key, Value, FieldTypes> = {
+  field: Key;
+  value: Value;
   required?: boolean;
-  requiredError?: string;
-  validators?: Validator<T, ItemT>[];
+  requiredError?: ValidatorError<Value, FieldTypes>;
+  validators?: Validator<Value, FieldTypes>[];
 };
-export type ValidationSchema<T> = {
-  [Key in keyof T]?: ValidationSchemaItem<T, T[Key]>;
-};
-export type OnSubmit<T> = (state: State<T>) => void;
+export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaItem<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
+export type OnSubmit<FieldTypes> = (state: State<FieldTypes>) => void;
 export type HandleChangeHook = (event?: any) => void;
 export type HandleSubmitHook = (event?: any) => void;
-export type UseFormOutput<T> = {
-  state: State<T>;
+export type UseFormOutput<FieldTypes> = {
+  state: State<FieldTypes>;
   handleChange: HandleChangeHook;
   handleSubmit: HandleSubmitHook;
 };
-export type ActionMap<M extends { [index: string]: any }> = {
-  [Key in keyof M]: { type: Key; payload?: M[Key] };
+export type ActionMap<Map extends { [key: string]: any }> = {
+  [Key in keyof Map]: { type: Key; payload?: Map[Key] };
 };
-export type Payload<T> = {
+export type PayloadChange<FieldTypes extends { [key: string]: any }> = {
+  key: string;
+  value: FieldTypes[keyof FieldTypes];
+};
+export type Payload<FieldTypes> = {
   [ActionTypes.Reset]: undefined;
-  [ActionTypes.Validate]: State<T>;
-  [ActionTypes.Change]: { key: string; value: T };
+  [ActionTypes.Validate]: State<FieldTypes>;
+  [ActionTypes.Change]: PayloadChange<FieldTypes>;
 };
-export type Actions<T> = ActionMap<Payload<T>>[keyof ActionMap<Payload<T>>];
+export type Actions<FieldTypes> = ActionMap<Payload<FieldTypes>>[keyof ActionMap<Payload<FieldTypes>>];
