@@ -26,11 +26,11 @@ const useForm = <FieldTypes>({
     event => {
       if (event && preventDefaultEventOnSubmit) event?.preventDefault();
 
-      const isStateValid = validateState(dispatch);
+      const isStateValid = validateState(state, dispatch);
 
       if (isStateValid) {
         if (onSubmit) onSubmit(state);
-        if (resetOnSubmit) dispatch({ type: ActionTypes.Reset });
+        if (resetOnSubmit) dispatch({ type: ActionTypes.Reset, payload: schema });
       }
     },
     [dispatch, state, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],

@@ -30,14 +30,14 @@ export type UseFormOutput<FieldTypes> = {
   handleSubmit: HandleSubmitHook;
 };
 export type ActionMap<Map extends { [key: string]: any }> = {
-  [Key in keyof Map]: { type: Key; payload?: Map[Key] };
+  [Key in keyof Map]: { type: Key; payload: Map[Key] };
 };
 export type PayloadChange<FieldTypes extends { [key: string]: any }> = {
   key: string;
   value: FieldTypes[keyof FieldTypes];
 };
 export type Payload<FieldTypes> = {
-  [ActionTypes.Reset]: undefined;
+  [ActionTypes.Reset]: Schema<FieldTypes>;
   [ActionTypes.Validate]: State<FieldTypes>;
   [ActionTypes.Change]: PayloadChange<FieldTypes>;
 };
