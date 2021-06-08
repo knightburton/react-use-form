@@ -3,92 +3,107 @@ import useForm from '@knightburton/react-use-form';
 import './App.css';
 
 const SIMPLE = `
-const onSubmit = simple => console.log('Simple:', simple);
+const onSubmit = data => console.log('simple ->', data);
 const {
-  value,
-  error,
+  state,
   handleChange,
   handleSubmit,
-  updateDefaultValue,
-} = useInput({
-  defaultValue: '',
-  valudationSchema: {},
-  onSubmit: onSubmit,
+} = useForm({
+  schema: [
+    { field: 'title', value: '' },
+    { field: 'description', value: '' },
+  ],
+  onSubmit,
   resetOnSubmit: false,
   preventDefaultEventOnSubmit: true,
   useEventTargetValueOnChange: true,
 });
-const onUpdate = updateDefaultValue('Updated');
 `;
 
-const COMPLEX = `
-const onSubmit = complex => console.log('Complex:', complex);
+const DETAILED = `
+const onSubmit = data => console.log('detailed ->', data);
 const {
-  value,
-  error,
+  state,
   handleChange,
   handleSubmit,
-  updateDefaultValue,
-} = useInput({
-  defaultValue: 'Complex',
-  valudationSchema: {
-    required: true,
-    requiredError: 'Hey! Give me this!',
-    validators: [
-      /^.{3,}$/,
-      value => value.length <= 125,
-    ],
-    errors: [
-      'Length must be greater than 3.',
-      'Length must be smaller or equal than 125.',
-    ],
-  },
-  onSubmit: onSubmit,
+} = useForm({
+  schema: [
+    {
+      field: 'titleDetailed',
+      value: '',
+      required: true,
+      requiredError: 'What about this one ?!',
+      validators: [
+        {
+          rule: /^.{3,}$/,
+          error: 'Length must be greater than 3.',
+        },
+      ],
+    },
+    {
+      field: 'descriptionDetailed',
+      value: 'Lorem ipsum',
+      required: true,
+      requiredError: 'Hey! Give me this!',
+      validators: [
+        { rule: /^.{3,}$/, error: 'Length must be greater than 3.' },
+        {
+          rule: (value: string): boolean => value.length <= 125,
+          error: 'Length must be smaller or equal than 125.',
+        },
+      ],
+    },
+  ],
+  onSubmit,
   resetOnSubmit: true,
   preventDefaultEventOnSubmit: true,
   useEventTargetValueOnChange: true,
 });
-const onUpdate = updateDefaultValue('Updated Complex');`;
+`;
 
 const App = () => {
-  const onSimpleSubmit = useCallback(simple => console.log('Simple:', simple), []);
-  const {
-    value: simple,
-    error: simpleError,
-    handleChange: onSimpleChange,
-    handleSubmit: simpleHandleSubmit,
-    updateDefaultValue: updateSimpleDefaultValue,
-  } = useForm({
-    defaultValue: '',
-    valudationSchema: {},
-    onSubmit: onSimpleSubmit,
+  const onSubmit = useCallback(data => console.log('simple ->', data), []);
+  const { state, handleChange, handleSubmit } = useForm({
+    schema: [
+      { field: 'title', value: '' },
+      { field: 'description', value: '' },
+    ],
+    onSubmit,
     resetOnSubmit: false,
     preventDefaultEventOnSubmit: true,
     useEventTargetValueOnChange: true,
   });
-  const onSimpleUpdateDefaultValue = useCallback(() => updateSimpleDefaultValue('Updated'), [updateSimpleDefaultValue]);
 
-  const onComplexSubmit = useCallback(complex => console.log('Complex:', complex), []);
+  const onSubmitDetailed = useCallback(data => console.log('detailed ->', data), []);
   const {
-    value: complex,
-    error: complexError,
-    handleChange: onComplexChange,
-    handleSubmit: complexHandleSubmit,
-    updateDefaultValue: updateComplexDefaultValue,
-  } = useForm<string>({
-    defaultValue: 'Complex',
-    valudationSchema: {
-      required: true,
-      requiredError: 'Hey! Give me this!',
-      validators: [/^.{3,}$/, (value: string) => value.length <= 125],
-      errors: ['Length must be greater than 3.', 'Length must be smaller or equal than 125.'],
-    },
-    onSubmit: onComplexSubmit,
+    state: stateDetailed,
+    handleChange: handleChangeDetailed,
+    handleSubmit: handleSubmitDetailed,
+  } = useForm({
+    schema: [
+      {
+        field: 'titleDetailed',
+        value: '',
+        required: true,
+        requiredError: 'What about this one ?!',
+        validators: [{ rule: /^.{3,}$/, error: 'Length must be greater than 3.' }],
+      },
+      {
+        field: 'descriptionDetailed',
+        value: 'Lorem ipsum',
+        required: true,
+        requiredError: 'Hey! Give me this!',
+        validators: [
+          { rule: /^.{3,}$/, error: 'Length must be greater than 3.' },
+          { rule: (value: string): boolean => value.length <= 125, error: 'Length must be smaller or equal than 125.' },
+        ],
+      },
+    ],
+    onSubmit: onSubmitDetailed,
     resetOnSubmit: true,
     preventDefaultEventOnSubmit: true,
     useEventTargetValueOnChange: true,
   });
-  const onComplexUpdateDefaultValue = useCallback(() => updateComplexDefaultValue('Updated Complex'), [updateComplexDefaultValue]);
 
   return (
     <div className="app">
@@ -100,25 +115,50 @@ const App = () => {
             <code>{SIMPLE}</code>
           </pre>
           <div className="form">
-            {simpleError && <span className="error">{simpleError}</span>}
-            <textarea id="text" name="text" className="input" value={simple} onChange={onSimpleChange} autoComplete="off" rows={4} />
+            <label htmlFor="title">title</label>
+            <br />
+            <input id="title" name="title" className="input" value={state.title?.value} onChange={handleChange} autoComplete="off" />
+            {state.title?.error && <span className="error">{state.title.error}</span>}
+            <label htmlFor="description">description</label>
+            <br />
+            <textarea id="description" name="description" className="input" value={state.description?.value} onChange={handleChange} autoComplete="off" rows={4} />
+            {state.description?.error && <span className="error">{state.description.error}</span>}
             <div className="actions">
-              <input type="button" value="Update default value" className="update" onClick={onSimpleUpdateDefaultValue} />
-              <input type="button" value="Submit" className="submit" onClick={simpleHandleSubmit} />
+              <input type="button" value="Submit" className="submit" onClick={handleSubmit} />
             </div>
           </div>
         </div>
 
         <div className="item">
           <pre className="description">
-            <code>{COMPLEX}</code>
+            <code>{DETAILED}</code>
           </pre>
           <div className="form">
-            {complexError && <span className="error">{complexError}</span>}
-            <textarea id="text" name="text" className="input" value={complex} onChange={onComplexChange} autoComplete="off" rows={4} />
+            <label htmlFor="titleDetailed">title</label>
+            <br />
+            <input
+              id="titleDetailed"
+              name="titleDetailed"
+              className="input"
+              value={stateDetailed.titleDetailed?.value}
+              onChange={handleChangeDetailed}
+              autoComplete="off"
+            />
+            {stateDetailed.titleDetailed?.error && <span className="error">{stateDetailed.titleDetailed.error}</span>}
+            <label htmlFor="descriptionDetailed">description</label>
+            <br />
+            <textarea
+              id="descriptionDetailed"
+              name="descriptionDetailed"
+              className="input"
+              value={stateDetailed.descriptionDetailed?.value}
+              onChange={handleChangeDetailed}
+              autoComplete="off"
+              rows={4}
+            />
+            {stateDetailed.descriptionDetailed?.error && <span className="error">{stateDetailed.descriptionDetailed.error}</span>}
             <div className="actions">
-              <input type="button" value="Update default value" className="update" onClick={onComplexUpdateDefaultValue} />
-              <input type="button" value="Submit" className="submit" onClick={complexHandleSubmit} />
+              <input type="button" value="Submit" className="submit" onClick={handleSubmitDetailed} />
             </div>
           </div>
         </div>
