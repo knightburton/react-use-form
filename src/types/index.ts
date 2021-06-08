@@ -1,7 +1,17 @@
 import { ActionTypes } from '../enums';
 
-export type State<FieldTypes> = {
+export type Field<Value, FieldTypes> = {
+  value: Value;
+  required?: boolean;
+  requiredError?: ValidatorError<Value, FieldTypes>;
+  validators?: Validator<Value, FieldTypes>[];
+};
+export type Fields<FieldTypes> = {
   [Key in keyof FieldTypes]?: { value: FieldTypes[Key]; error: string; };
+};
+export type StateField<Value, FieldTypes> = { error: string; } & Field<Value, FieldTypes>;
+export type State<FieldTypes> = {
+  [Key in keyof FieldTypes]?: StateField<FieldTypes[Key], FieldTypes>;
 };
 export type ValidatorRule<Value, FieldTypes> = ((value: Value, state: State<FieldTypes>) => boolean) | RegExp;
 export type ValidatorError<Value, FieldTypes> = ((value: Value, state: State<FieldTypes>) => string) | string;
@@ -9,14 +19,8 @@ export type Validator<Value, FieldTypes> = {
   rule: ValidatorRule<Value, FieldTypes>;
   error: ValidatorError<Value, FieldTypes>;
 };
-export type SchemaItem<Key, Value, FieldTypes> = {
-  field: Key;
-  value: Value;
-  required?: boolean;
-  requiredError?: ValidatorError<Value, FieldTypes>;
-  validators?: Validator<Value, FieldTypes>[];
-};
-export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaItem<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
+export type SchemaField<Key, Value, FieldTypes> = { field: Key; } & Field<Value, FieldTypes>;
+export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaField<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
 export type OnSubmit<FieldTypes> = (state: State<FieldTypes>) => void;
 export type HandleChangeHook = (event?: any) => void;
 export type HandleSubmitHook = (event?: any) => void;
