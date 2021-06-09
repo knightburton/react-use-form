@@ -1,5 +1,5 @@
 import { ActionTypes } from '../enums';
-import { REQUIRED_REGEX, REQUIRED_ERROR } from '../constants';
+import { REQUIRED_REGEX, REQUIRED_ERROR, INVALID_FIELD } from '../constants';
 import type { Schema, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
 
 export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: Fields<FieldTypes>, error?: ValidatorError<Value, FieldTypes>): string => {
@@ -15,7 +15,7 @@ export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, f
     return false;
   });
 
-  return invalidValidator?.error ? getFieldValidatorError(value, fields, invalidValidator.error) : '';
+  return invalidValidator ? getFieldValidatorError(value, fields, invalidValidator?.error || INVALID_FIELD) : '';
 };
 
 export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: Fields<FieldTypes>): string => {
