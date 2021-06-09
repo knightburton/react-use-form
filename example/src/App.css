@@ -36,14 +36,29 @@ body {
   padding: 10px;
   margin-bottom: 10px;
   flex-grow: 1;
+  font-size: small;
 }
 
 .form {
   position: relative;
 }
 
+.inputContainer {
+  position: relative;
+  margin-top: 5px;
+  padding-bottom: 20px;
+}
+
+.label {
+  color: rgba(0, 0, 0, 0.54);
+  font-style: italic;
+}
+
 .error {
   display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
   color: #ff0000;
 }
 

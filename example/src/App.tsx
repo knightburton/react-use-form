@@ -2,10 +2,8 @@ import React, { useCallback } from 'react';
 import useForm from '@knightburton/react-use-form';
 import './App.css';
 
-const SIMPLE = `
-const onSubmit = data => console.log('simple ->', data);
-const {
-  state,
+const SIMPLE = `const {
+  fields,
   handleChange,
   handleSubmit,
 } = useForm({
@@ -13,17 +11,11 @@ const {
     { field: 'title', value: '' },
     { field: 'description', value: '' },
   ],
-  onSubmit,
-  resetOnSubmit: false,
-  preventDefaultEventOnSubmit: true,
-  useEventTargetValueOnChange: true,
-});
-`;
+  onSubmit: data => console.log('simple ->', data),
+});`;
 
-const DETAILED = `
-const onSubmit = data => console.log('detailed ->', data);
-const {
-  state,
+const DETAILED = `const {
+  fields,
   handleChange,
   handleSubmit,
 } = useForm({
@@ -44,9 +36,11 @@ const {
       field: 'descriptionDetailed',
       value: 'Lorem ipsum',
       required: true,
-      requiredError: 'Hey! Give me this!',
       validators: [
-        { rule: /^.{3,}$/, error: 'Length must be greater than 3.' },
+        {
+          rule: /^.{3,}$/,
+          error: 'Length must be greater than 3.',
+        },
         {
           rule: (value: string): boolean => value.length <= 125,
           error: 'Length must be smaller or equal than 125.',
@@ -54,29 +48,23 @@ const {
       ],
     },
   ],
-  onSubmit,
+  onSubmit: data => console.log('detailed ->', data),
   resetOnSubmit: true,
-  preventDefaultEventOnSubmit: true,
-  useEventTargetValueOnChange: true,
-});
-`;
+});`;
 
 const App = () => {
   const onSubmit = useCallback(data => console.log('simple ->', data), []);
-  const { state, handleChange, handleSubmit } = useForm({
+  const { fields, handleChange, handleSubmit } = useForm({
     schema: [
       { field: 'title', value: '' },
       { field: 'description', value: '' },
     ],
     onSubmit,
-    resetOnSubmit: false,
-    preventDefaultEventOnSubmit: true,
-    useEventTargetValueOnChange: true,
   });
 
   const onSubmitDetailed = useCallback(data => console.log('detailed ->', data), []);
   const {
-    state: stateDetailed,
+    fields: fieldsDetailed,
     handleChange: handleChangeDetailed,
     handleSubmit: handleSubmitDetailed,
   } = useForm({
@@ -92,7 +80,6 @@ const App = () => {
         field: 'descriptionDetailed',
         value: 'Lorem ipsum',
         required: true,
-        requiredError: 'Hey! Give me this!',
         validators: [
           { rule: /^.{3,}$/, error: 'Length must be greater than 3.' },
           { rule: (value: string): boolean => value.length <= 125, error: 'Length must be smaller or equal than 125.' },
@@ -101,8 +88,6 @@ const App = () => {
     ],
     onSubmit: onSubmitDetailed,
     resetOnSubmit: true,
-    preventDefaultEventOnSubmit: true,
-    useEventTargetValueOnChange: true,
   });
 
   return (
@@ -115,14 +100,23 @@ const App = () => {
             <code>{SIMPLE}</code>
           </pre>
           <div className="form">
-            <label htmlFor="title">title</label>
-            <br />
-            <input id="title" name="title" className="input" value={state.title?.value} onChange={handleChange} autoComplete="off" />
-            {state.title?.error && <span className="error">{state.title.error}</span>}
-            <label htmlFor="description">description</label>
-            <br />
-            <textarea id="description" name="description" className="input" value={state.description?.value} onChange={handleChange} autoComplete="off" rows={4} />
-            {state.description?.error && <span className="error">{state.description.error}</span>}
+            <div className="inputContainer">
+              <label htmlFor="title" className="label">
+                Title:
+              </label>
+              <br />
+              <input id="title" name="title" className="input" value={fields.title?.value} onChange={handleChange} autoComplete="off" />
+              {fields.title?.error && <span className="error">{fields.title.error}</span>}
+            </div>
+            <div className="inputContainer">
+              <label htmlFor="description" className="label">
+                Description:
+              </label>
+              <br />
+              <textarea id="description" name="description" className="input" value={fields.description?.value} onChange={handleChange} autoComplete="off" rows={4} />
+              {fields.description?.error && <span className="error">{fields.description.error}</span>}
+            </div>
+
             <div className="actions">
               <input type="button" value="Submit" className="submit" onClick={handleSubmit} />
             </div>
@@ -134,29 +128,38 @@ const App = () => {
             <code>{DETAILED}</code>
           </pre>
           <div className="form">
-            <label htmlFor="titleDetailed">title</label>
-            <br />
-            <input
-              id="titleDetailed"
-              name="titleDetailed"
-              className="input"
-              value={stateDetailed.titleDetailed?.value}
-              onChange={handleChangeDetailed}
-              autoComplete="off"
-            />
-            {stateDetailed.titleDetailed?.error && <span className="error">{stateDetailed.titleDetailed.error}</span>}
-            <label htmlFor="descriptionDetailed">description</label>
-            <br />
-            <textarea
-              id="descriptionDetailed"
-              name="descriptionDetailed"
-              className="input"
-              value={stateDetailed.descriptionDetailed?.value}
-              onChange={handleChangeDetailed}
-              autoComplete="off"
-              rows={4}
-            />
-            {stateDetailed.descriptionDetailed?.error && <span className="error">{stateDetailed.descriptionDetailed.error}</span>}
+            <div className="inputContainer">
+              <label htmlFor="titleDetailed" className="label">
+                Title:
+              </label>
+              <br />
+              <input
+                id="titleDetailed"
+                name="titleDetailed"
+                className="input"
+                value={fieldsDetailed.titleDetailed?.value}
+                onChange={handleChangeDetailed}
+                autoComplete="off"
+              />
+              {fieldsDetailed.titleDetailed?.error && <span className="error">{fieldsDetailed.titleDetailed.error}</span>}
+            </div>
+            <div className="inputContainer">
+              <label htmlFor="descriptionDetailed" className="label">
+                Description:
+              </label>
+              <br />
+              <textarea
+                id="descriptionDetailed"
+                name="descriptionDetailed"
+                className="input"
+                value={fieldsDetailed.descriptionDetailed?.value}
+                onChange={handleChangeDetailed}
+                autoComplete="off"
+                rows={4}
+              />
+              {fieldsDetailed.descriptionDetailed?.error && <span className="error">{fieldsDetailed.descriptionDetailed.error}</span>}
+            </div>
+
             <div className="actions">
               <input type="button" value="Submit" className="submit" onClick={handleSubmitDetailed} />
             </div>
