@@ -1,18 +1,17 @@
 import { useReducer, useCallback, Reducer } from 'react';
 import { IUseForm } from './interfaces/index.interface';
-import { initalizer, reducer, validateState } from './helpers';
+import { initalizer, reducer, validateFields } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
-import type { State, Actions, Schema, HandleChangeHook, HandleSubmitHook, UseFormOutput } from './types';
+import type { Fields, Actions, Schema, HandleChangeHook, HandleSubmitHook, UseFormOutput } from './types';
 
 const useForm = <FieldTypes>({
   schema = DEFAULT_OPTIONS.SCHEMA,
   onSubmit = DEFAULT_OPTIONS.ON_SUBMIT,
   resetOnSubmit = DEFAULT_OPTIONS.RESET_ON_SUBMIT,
-  // useEventTargetValueOnChange = DEFAULT_OPTIONS.USE_EVENT_TARGET_VALUE_ON_CHANGE,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
 }: IUseForm<FieldTypes> = {}): UseFormOutput<FieldTypes> => {
-  const [state, dispatch] = useReducer<Reducer<State<FieldTypes>, Actions<FieldTypes>>, Schema<FieldTypes>>(reducer, schema, initalizer);
+  const [fields, dispatch] = useReducer<Reducer<Fields<FieldTypes>, Actions<FieldTypes>>, Schema<FieldTypes>>(reducer, schema, initalizer);
 
   const handleChange = useCallback<HandleChangeHook>(
     event => {
@@ -26,18 +25,20 @@ const useForm = <FieldTypes>({
     event => {
       if (event && preventDefaultEventOnSubmit) event?.preventDefault();
 
-      const isStateValid = validateState(state, dispatch);
+      const { validatedFields, areFieldsValid } = validateFields(fields, schema);
 
-      if (isStateValid) {
-        if (onSubmit) onSubmit(state);
+      if (areFieldsValid) {
+        if (onSubmit) onSubmit(fields);
         if (resetOnSubmit) dispatch({ type: ActionTypes.Reset, payload: schema });
+      } else {
+        dispatch({ type: ActionTypes.Validate, payload: validatedFields });
       }
     },
-    [dispatch, state, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
+    [dispatch, fields, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
   return {
-    state,
+    fields,
     handleChange,
     handleSubmit,
   };

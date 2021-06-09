@@ -1,70 +1,59 @@
-import { Dispatch } from 'react';
 import { ActionTypes } from '../enums';
 import { REQUIRED_REGEX, REQUIRED_ERROR } from '../constants';
-import type { Schema, ValidatorError, State, StateField, Actions, Validator } from '../types';
+import type { Schema, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
 
-export const getValidatorError = <Value, FieldTypes>(value: Value, state: State<FieldTypes>, error?: ValidatorError<Value, FieldTypes>): string => {
-  if (typeof error === 'function') return error(value, state);
+export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: Fields<FieldTypes>, error?: ValidatorError<Value, FieldTypes>): string => {
+  if (typeof error === 'function') return error(value, fields);
   if (typeof error === 'string') return error;
   return '';
 };
 
-export const executeValidators = <Value, FieldTypes>(value: Value, state: State<FieldTypes>, validators: Validator<Value, FieldTypes>[]): string => {
+export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, fields: Fields<FieldTypes>, validators: Validator<Value, FieldTypes>[]): string => {
   const invalidValidator = validators.find(({ rule }) => {
-    if (typeof rule === 'function') return !rule(value, state);
+    if (typeof rule === 'function') return !rule(value, fields);
     if (rule instanceof RegExp && typeof value === 'string') return !rule.test(value);
     return false;
   });
 
-  return invalidValidator?.error ? getValidatorError(value, state, invalidValidator.error) : '';
+  return invalidValidator?.error ? getFieldValidatorError(value, fields, invalidValidator.error) : '';
 };
 
-export const validateField = <Value, FieldTypes>(field: StateField<Value, FieldTypes>, state: State<FieldTypes>): string => {
-  const { value, required, requiredError, validators } = field;
+export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: Fields<FieldTypes>): string => {
+  const { required, requiredError, validators } = schemaField;
   if (required && ((typeof value === 'string' && !REQUIRED_REGEX.test(value)) || value === null || value === undefined))
-    return getValidatorError(value, state, requiredError || REQUIRED_ERROR);
-  if (validators && value) return executeValidators(value, state, validators);
+    return getFieldValidatorError(value, fields, requiredError || REQUIRED_ERROR);
+  if (validators && value) return executeFieldValidatorsOnValue(value, fields, validators);
   return '';
 };
 
-export const validateState = <FieldTypes>(state: State<FieldTypes>, dispatch: Dispatch<Actions<FieldTypes>>): boolean => {
-  const { validatedState, invalid } = Object.keys(state).reduce(
-    (o, key) => {
-      const error = validateField(state[key], state);
-      return {
-        validatedState: {
-          ...o.validatedState,
-          [key]: {
-            ...state[key],
-            error,
-          },
-        },
-        invalid: o.invalid || !!error,
+export const validateFields = <FieldTypes>(fields: Fields<FieldTypes>, schema: Schema<FieldTypes>): ValidationResult<FieldTypes> =>
+  schema.reduce(
+    (o: ValidationResult<FieldTypes>, schemaField) => {
+      const value = fields[schemaField.field].value;
+      const error = validateFieldValue(value, schemaField, fields);
+      const validatedFields = {
+        ...o.validatedFields,
+        [schemaField.field]: { value, error },
       };
+      const areFieldsValid = o.areFieldsValid && !error;
+      return { validatedFields, areFieldsValid };
     },
-    {
-      validatedState: {},
-      invalid: false,
-    },
+    { validatedFields: {} as Fields<FieldTypes>, areFieldsValid: true },
   );
 
-  dispatch({ type: ActionTypes.Validate, payload: validatedState });
-  return invalid;
-};
-
-export const initalizer = <FieldTypes>(schema: Schema<FieldTypes>): State<FieldTypes> =>
+export const initalizer = <FieldTypes>(schema: Schema<FieldTypes>): Fields<FieldTypes> =>
   schema.reduce(
-    (state, item) => ({
-      ...state,
+    (fields, item) => ({
+      ...fields,
       [item.field]: {
-        ...item,
+        value: item.value,
         error: '',
       },
     }),
-    {},
+    {} as Fields<FieldTypes>,
   );
 
-export const reducer = <FieldTypes>(state: State<FieldTypes>, action: Actions<FieldTypes>): State<FieldTypes> => {
+export const reducer = <FieldTypes>(fields: Fields<FieldTypes>, action: Actions<FieldTypes>): Fields<FieldTypes> => {
   switch (action.type) {
     case ActionTypes.Reset:
       return initalizer(action.payload);
@@ -72,14 +61,13 @@ export const reducer = <FieldTypes>(state: State<FieldTypes>, action: Actions<Fi
       return action.payload;
     case ActionTypes.Change:
       return {
-        ...state,
+        ...fields,
         [action.payload.key]: {
-          ...state[action.payload.key],
           value: action.payload.value,
           error: '',
         },
       };
     default:
-      return state;
+      return fields;
   }
 };
