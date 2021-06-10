@@ -1,6 +1,6 @@
 export const REQUIRED_REGEX = /\S/;
 export const REQUIRED_ERROR = 'This field is required.';
-export const INVALID_FIELD = 'This field is not valid.'
+export const INVALID_FIELD = 'This field is not valid.';
 
 export const DEFAULT_OPTIONS = {
   SCHEMA: [],

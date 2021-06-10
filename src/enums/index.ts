@@ -3,3 +3,5 @@ export enum ActionTypes {
   Validate = 'VALIDATE',
   Change = 'CHANGE',
 }
+
+export default ActionTypes;

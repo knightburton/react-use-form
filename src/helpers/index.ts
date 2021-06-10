@@ -29,7 +29,7 @@ export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaF
 export const validateFields = <FieldTypes>(fields: Fields<FieldTypes>, schema: Schema<FieldTypes>): ValidationResult<FieldTypes> =>
   schema.reduce(
     (o: ValidationResult<FieldTypes>, schemaField) => {
-      const value = fields[schemaField.field].value;
+      const { value } = fields[schemaField.field];
       const error = validateFieldValue(value, schemaField, fields);
       const validatedFields = {
         ...o.validatedFields,

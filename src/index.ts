@@ -34,7 +34,7 @@ const useForm = <FieldTypes>({
         dispatch({ type: ActionTypes.Validate, payload: validatedFields });
       }
     },
-    [dispatch, fields, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
+    [dispatch, fields, schema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
   return {
