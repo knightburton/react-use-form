@@ -26,7 +26,7 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "project": ["./tsconfig.json"]
+    "project": ["./tsconfig.dev.json"]
   },
   "ignorePatterns": ["rollup.config.js"],
   "settings": {
