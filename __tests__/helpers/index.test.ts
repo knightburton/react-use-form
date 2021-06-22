@@ -7,11 +7,14 @@ const fields = {
 };
 const mock = {
   mockValue: fields.mock1.value,
+  mockValueAsNumber: +fields.mock1.value,
   mockErrorString: 'This is not a valid value.',
   mockErrorFunction: (x: string): string => `"${x}" is not a valid value.`,
   mockErrorFunctionResult: `"${fields.mock1.value}" is not a valid value.`,
   mockErrorFunctionFields: (x: string, innerFields: Fields<MockFieldTypes>): string => `"${x}" is not a valid value. FIELDS: ${JSON.stringify(innerFields)}`,
   mockErrorFunctionFieldsResult: `"${fields.mock1.value}" is not a valid value. FIELDS: ${JSON.stringify(fields)}`,
+  mockValidators: [{ rule: (x: string): boolean => x.length === 16, error: 'The length is not valid' }],
+  mockValidatorsRegexp: [{ rule: /^.{16}$/, error: 'The length is not valid - regexp' }],
 };
 
 describe('getFieldValidatorError', () => {
@@ -29,5 +32,23 @@ describe('getFieldValidatorError', () => {
 
   it('returns a valid error string - from function with all argument', () => {
     expect(helpers.getFieldValidatorError(mock.mockValue, fields, mock.mockErrorFunctionFields)).toEqual(mock.mockErrorFunctionFieldsResult);
+  });
+});
+
+describe('executeFieldValidatorsOnValue', () => {
+  it('returns an empty string - empty validators array', () => {
+    expect(helpers.executeFieldValidatorsOnValue(mock.mockValue, fields, [])).toEqual('');
+  });
+
+  it('returns an empty string - false validator rule and value combination', () => {
+    expect(helpers.executeFieldValidatorsOnValue(mock.mockValueAsNumber, fields, mock.mockValidatorsRegexp)).toEqual('');
+  });
+
+  it('returns the given error - function based validator rule', () => {
+    expect(helpers.executeFieldValidatorsOnValue(mock.mockValue, fields, mock.mockValidators)).toEqual(mock.mockValidators[0].error);
+  });
+
+  it('returns the given error - RegExp based validator rule', () => {
+    expect(helpers.executeFieldValidatorsOnValue(mock.mockValue, fields, mock.mockValidatorsRegexp)).toEqual(mock.mockValidatorsRegexp[0].error);
   });
 });
