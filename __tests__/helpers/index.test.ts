@@ -2,106 +2,101 @@ import * as helpers from '../../src/helpers';
 import { Fields } from '../../src/types';
 import { REQUIRED_ERROR } from '../../src/constants';
 
-type MockFieldTypes = { mock1: string; mock2: number };
-const fields = {
-  mock1: { value: '112233', error: '' },
-  mock2: { value: 96, error: '' },
-};
-const schemaMock1 = {
-  field: 'mock1',
-  value: fields.mock1.value,
+type FieldTypes = { field1: string; field2: number };
+const error3 = 'Length must be greater than 3.';
+const error125 = (value: string) => `${value} length is not <= 125`;
+const error7 = (value: string, fields: Fields<FieldTypes>) => `${value} length is not === 7. FIELDS: ${JSON.stringify(fields)}`;
+const errorRequired = 'I do not like this.';
+const field1 = {
+  field: 'field1',
+  value: '0112233',
   required: true,
   validators: [
-    { rule: /^.{3,}$/, error: 'Length must be greater than 3.' },
-    { rule: (value: string): boolean => value.length <= 125, error: 'Length must be smaller or equal than 125.' },
+    { rule: /^.{3,}$/, error: error3 },
+    { rule: (value: string): boolean => value.length <= 125, error: error125 },
+    {
+      rule: (value: string): boolean => value.length === 7,
+      error: error7,
+    },
   ],
 };
-const schemaMock2 = {
-  field: 'mock2',
-  value: fields.mock2.value,
+const field2 = {
+  field: 'field2',
+  value: 96,
   required: true,
-  requiredError: 'I do not like this.',
+  requiredError: errorRequired,
 };
-const longValue =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel elementum lectus. Vestibulum quam dolor, tempus non dolor et, lacinia tincidunt leo.';
-const mock = {
-  mockValue: fields.mock1.value,
-  mockValueAsNumber: +fields.mock1.value,
-  mockErrorString: 'This is not a valid value.',
-  mockErrorFunction: (x: string): string => `"${x}" is not a valid value.`,
-  mockErrorFunctionResult: `"${fields.mock1.value}" is not a valid value.`,
-  mockErrorFunctionFields: (x: string, innerFields: Fields<MockFieldTypes>): string => `"${x}" is not a valid value. FIELDS: ${JSON.stringify(innerFields)}`,
-  mockErrorFunctionFieldsResult: `"${fields.mock1.value}" is not a valid value. FIELDS: ${JSON.stringify(fields)}`,
-  mockValidators: [{ rule: (x: string): boolean => x.length === 16, error: 'The length is not valid' }],
-  mockValidatorsRegexp: [{ rule: /^.{16}$/, error: 'The length is not valid - regexp' }],
+const fields = {
+  field1: { value: field1.value, error: '' },
+  field2: { value: field2.value, error: '' },
 };
 
 describe('getFieldValidatorError', () => {
   it('returns an empty string - no error passed', () => {
-    expect(helpers.getFieldValidatorError(mock.mockValue, fields)).toEqual('');
+    expect(helpers.getFieldValidatorError(field1.value, fields)).toEqual('');
   });
 
   it('returns a valid error string - from string', () => {
-    expect(helpers.getFieldValidatorError(mock.mockValue, fields, mock.mockErrorString)).toEqual(mock.mockErrorString);
+    expect(helpers.getFieldValidatorError(field1.value, fields, field1.validators[0].error)).toEqual(error3);
   });
 
   it('returns a valid error string - from function with value argument', () => {
-    expect(helpers.getFieldValidatorError(mock.mockValue, fields, mock.mockErrorFunction)).toEqual(mock.mockErrorFunctionResult);
+    expect(helpers.getFieldValidatorError(field1.value, fields, field1.validators[1].error)).toEqual(error125(field1.value));
   });
 
   it('returns a valid error string - from function with all argument', () => {
-    expect(helpers.getFieldValidatorError(mock.mockValue, fields, mock.mockErrorFunctionFields)).toEqual(mock.mockErrorFunctionFieldsResult);
+    expect(helpers.getFieldValidatorError(field1.value, fields, field1.validators[2].error)).toEqual(error7(field1.value, fields));
   });
 });
 
 describe('executeFieldValidatorsOnValue', () => {
   it('returns an empty string - empty validators array', () => {
-    expect(helpers.executeFieldValidatorsOnValue(mock.mockValue, fields, [])).toEqual('');
+    expect(helpers.executeFieldValidatorsOnValue(field1.value, fields, [])).toEqual('');
   });
 
   it('returns an empty string - false validator rule and value combination', () => {
-    expect(helpers.executeFieldValidatorsOnValue(mock.mockValueAsNumber, fields, mock.mockValidatorsRegexp)).toEqual('');
+    expect(helpers.executeFieldValidatorsOnValue(123, fields, [{ rule: /^.{3,}$/, error: error3 }])).toEqual('');
   });
 
   it('returns the given error - function based validator rule', () => {
-    expect(helpers.executeFieldValidatorsOnValue(mock.mockValue, fields, mock.mockValidators)).toEqual(mock.mockValidators[0].error);
+    expect(helpers.executeFieldValidatorsOnValue(`0${field1.value}`, fields, field1.validators)).toEqual(error7(`0${field1.value}`, fields));
   });
 
   it('returns the given error - RegExp based validator rule', () => {
-    expect(helpers.executeFieldValidatorsOnValue(mock.mockValue, fields, mock.mockValidatorsRegexp)).toEqual(mock.mockValidatorsRegexp[0].error);
+    expect(helpers.executeFieldValidatorsOnValue(field1.value.slice(0, 2), fields, field1.validators)).toEqual(error3);
   });
 });
 
 describe('validateFieldValue', () => {
   it('returns an empty string - no validation required', () => {
-    expect(helpers.validateFieldValue(mock.mockValue, { field: schemaMock1.field, value: schemaMock1.value }, fields)).toEqual('');
+    expect(helpers.validateFieldValue(field1.value, { field: field1.field, value: field1.value }, fields)).toEqual('');
   });
 
   it('returns an empty string - valid value', () => {
-    expect(helpers.validateFieldValue(mock.mockValue, schemaMock1, fields)).toEqual('');
+    expect(helpers.validateFieldValue(field1.value, field1, fields)).toEqual('');
   });
 
   it('returns the default required error string - empty string value', () => {
-    expect(helpers.validateFieldValue('', schemaMock1, fields)).toEqual(REQUIRED_ERROR);
+    expect(helpers.validateFieldValue('', field1, fields)).toEqual(REQUIRED_ERROR);
   });
 
   it('returns the default required error string - undefined value', () => {
-    expect(helpers.validateFieldValue(undefined, { ...schemaMock2, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
+    expect(helpers.validateFieldValue(undefined, { ...field2, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
   });
 
   it('returns the default required error string - null value', () => {
-    expect(helpers.validateFieldValue(null, { ...schemaMock2, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
+    expect(helpers.validateFieldValue(null, { ...field2, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
   });
 
   it('returns a user specified required error string - null value', () => {
-    expect(helpers.validateFieldValue(null, schemaMock2, fields)).toEqual(schemaMock2.requiredError);
+    expect(helpers.validateFieldValue(null, field2, fields)).toEqual(errorRequired);
   });
 
   it('returns a user specified validator error string - null value', () => {
-    expect(helpers.validateFieldValue('12', schemaMock1, fields)).toEqual(schemaMock1.validators[0].error);
+    expect(helpers.validateFieldValue('12', field1, fields)).toEqual(error3);
   });
 
   it('returns a user specified validator error string - long value', () => {
-    expect(helpers.validateFieldValue(longValue, schemaMock1, fields)).toEqual(schemaMock1.validators[1].error);
+    expect(helpers.validateFieldValue(field1.value.repeat(22), field1, fields)).toEqual(error125(field1.value.repeat(22)));
   });
 });
