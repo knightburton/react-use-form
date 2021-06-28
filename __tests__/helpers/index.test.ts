@@ -1,6 +1,7 @@
 import * as helpers from '../../src/helpers';
-import { Fields, Schema } from '../../src/types';
+import { Fields, Schema, Actions } from '../../src/types';
 import { REQUIRED_ERROR } from '../../src/constants';
+import { ActionTypes } from '../../src/enums';
 
 type FieldTypes = { field1: string; field2: number };
 const error3 = 'Length must be greater than 3.';
@@ -127,5 +128,27 @@ describe('initalizer', () => {
 
   it('returns the fields object - valid schema', () => {
     expect(helpers.initalizer([field1, field2] as Schema<FieldTypes>)).toEqual(fields);
+  });
+});
+
+describe('reducer', () => {
+  it('returns the previous state - invalid action', () => {
+    expect(helpers.reducer(fields, {} as Actions<FieldTypes>)).toEqual(fields);
+  });
+
+  it('returns empty state state - invalid action', () => {
+    expect(helpers.reducer({} as Fields<FieldTypes>, {} as Actions<FieldTypes>)).toEqual({});
+  });
+
+  it('returns the reseted state - reset action', () => {
+    expect(helpers.reducer({} as Fields<FieldTypes>, { type: ActionTypes.Reset, payload: [field1, field2] as Schema<FieldTypes> })).toEqual(fields);
+  });
+
+  it('returns the validated state - validate action', () => {
+    expect(helpers.reducer(fields, { type: ActionTypes.Validate, payload: fields })).toEqual(fields);
+  });
+
+  it('returns the updated state - change action - field1', () => {
+    expect(helpers.reducer(fields, { type: ActionTypes.Change, payload: { key: 'field1', value: `1` } })).toEqual({ ...fields, field1: { value: '1', error: '' } });
   });
 });
