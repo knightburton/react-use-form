@@ -23,16 +23,15 @@ import useForm from '@knightburton/react-use-form';
 
 const App = () => {
   const onSubmit = data => console.log(data);
-  const { state, handleChange, handleSubmit } = useForm({
-    schema: {},
-    valudationSchema: {},
+  const { fields, handleChange, handleSubmit } = useForm({
+    schema: [{ field: 'text', value: '' }],
     onSubmit,
   });
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" id="text" name="text" value={value} onChange={handleChange} />
-      {error && <p>{error}</p>}
+      <input type="text" id="text" name="text" value={fields.text.value} onChange={handleChange} />
+      {fields.text.error && <p>{fields.text.error}</p>}
       <input type="submit" value="Submit" />
     </form>
   );
@@ -46,25 +45,31 @@ For more detailed example check the [example](./example) directory.
 The hook returns an object with the following props.
 | Prop name | Type | Description |
 | --- | --- | --- |
-| state | `object` | State schema |
-| handleChange | `function` | The function is used to update the a value inside the form state. It accepts a direct new value or input change event, depends on the `useEventTargetValueOnChange` option. |
-| handleSubmit | `function` | The function is used to submit the state for validation. It can accept an event, the default behaviour of that can be prevented with the `preventDefaultEventOnSubmit` option. |
+| fields | `object` | Generated fields state with values and errors. |
+| handleChange | `function` | The function is used to update a value inside the fields state. It accepts an input change event. |
+| handleSubmit | `function` | The function is used to submit the fields state for validation. It can accept an event, the default behaviour of that can be prevented with the `preventDefaultEventOnSubmit` option. |
 
 ### Options
 The hook behaviour can be modified with the following props.
 | Prop name | Type | Default Value | Description |
 | --- | --- | --- | --- |
-| schema | `object` | `{}` | Defines the initial state schema. |
-| valudationSchema | `object` | `{}` | Object of validation rules and corresponding errors. Check the prop definition [here](https://github.com/knightburton/react-use-form#validation-schema). |
+| schema | `object[]` | `[]` | Defines the initial fields state and provides the validation rulesets for later. Check the `schema` prop definitions [here](https://github.com/knightburton/react-use-form#schema-option) |
 | onSubmit | `function` | `undefined` | Function called when the validation was successful after `handleSubmit` triggered. |
-| resetOnSubmit | `boolean` | `false` | Whether the value should be reseted to the default value after successful `onSubmit` or not. |
-| useEventTargetValueOnChange | `boolean` | `true` | Whether the `handleChange` should destruct the value from the input event or not. |
+| resetOnSubmit | `boolean` | `false` | Whether the field values should be reseted to the default value after successful `onSubmit` or not. |
 | preventDefaultEventOnSubmit | `boolean` | `true` | Whether the `handleSubmit` event default behaviour should be prevented (if event provided) or not. |
 
-### Validation Schema
-The prop definition of validation rules and errors.
-| Prop name | Type | Description |
-| --- | --- | --- |
+### Schema Option
+The option itself is an `array of objects` and each object should look like this:
+| Prop name | Type | Mandatory | Default Value | Description |
+| --- | --- | --- | --- | --- |
+| field | `string` | Yes | - | Identifier of the field. |
+| value | `generic` | Yes | - | Defines the initial value of the field. |
+| required | `boolean` | No | `false` | Defines whether teh field is required or not during the validation. |
+| requiredError | `function` or `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the error definitions [here](https://github.com/knightburton/react-use-form#validators). |
+| validators | `array` | No | `[]` | Defines the validation rulesets. Check the definitions [here](https://github.com/knightburton/react-use-form#validators). |
+
+### Validators
+
 
 ### Development
 Local development is broken into two parts (ideally using two terminal tabs).
