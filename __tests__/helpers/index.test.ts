@@ -68,7 +68,7 @@ describe('executeFieldValidatorsOnValue', () => {
   });
 
   it('returns the default error - invalid error declaration on validator', () => {
-    expect(helpers.executeFieldValidatorsOnValue(field1.value, fields, [{ rule: /^.{333,}$/, error: null }])).toEqual(INVALID_FIELD);
+    expect(helpers.executeFieldValidatorsOnValue(field1.value, fields, [{ rule: /^.{333,}$/, error: '' }])).toEqual(INVALID_FIELD);
   });
 });
 
