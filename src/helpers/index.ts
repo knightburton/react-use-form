@@ -15,7 +15,7 @@ export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, f
     return false;
   });
 
-  return invalidValidator ? getFieldValidatorError(value, fields, invalidValidator?.error || INVALID_FIELD) : '';
+  return invalidValidator ? getFieldValidatorError(value, fields, invalidValidator.error || INVALID_FIELD) : '';
 };
 
 export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: Fields<FieldTypes>): string => {
