@@ -1,5 +1,5 @@
 import * as helpers from '../../src/helpers';
-import { Fields } from '../../src/types';
+import { Fields, Schema } from '../../src/types';
 import { REQUIRED_ERROR } from '../../src/constants';
 
 type FieldTypes = { field1: string; field2: number };
@@ -98,5 +98,24 @@ describe('validateFieldValue', () => {
 
   it('returns a user specified validator error string - long value', () => {
     expect(helpers.validateFieldValue(field1.value.repeat(22), field1, fields)).toEqual(error125(field1.value.repeat(22)));
+  });
+});
+
+describe('validateFields', () => {
+  it('returns empty fields and valid flag - empty schema', () => {
+    expect(helpers.validateFields({} as Fields<FieldTypes>, [])).toEqual({ validatedFields: {}, areFieldsValid: true });
+  });
+
+  it('returns fields and valid flag - valid schema', () => {
+    expect(helpers.validateFields(fields, [field1, field2] as Schema<FieldTypes>)).toEqual({ validatedFields: fields, areFieldsValid: true });
+  });
+
+  it('returns fields and invalid flag - invalid schema', () => {
+    const field = { ...fields[0], value: `12` };
+    const fieldWithError = { value: `12`, error: error3 };
+    expect(helpers.validateFields({ ...fields, field1: field }, [field1, field2] as Schema<FieldTypes>)).toEqual({
+      validatedFields: { ...fields, field1: fieldWithError },
+      areFieldsValid: false,
+    });
   });
 });
