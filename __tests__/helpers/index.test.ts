@@ -119,3 +119,13 @@ describe('validateFields', () => {
     });
   });
 });
+
+describe('initalizer', () => {
+  it('returns and empty fields object - empty schema', () => {
+    expect(helpers.initalizer([] as Schema<FieldTypes>)).toEqual({});
+  });
+
+  it('returns the fields object - valid schema', () => {
+    expect(helpers.initalizer([field1, field2] as Schema<FieldTypes>)).toEqual(fields);
+  });
+});
