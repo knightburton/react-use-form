@@ -1,6 +1,6 @@
 import * as helpers from '../../src/helpers';
 import { Fields, Schema, Actions } from '../../src/types';
-import { REQUIRED_ERROR } from '../../src/constants';
+import { REQUIRED_ERROR, INVALID_FIELD } from '../../src/constants';
 import { ActionTypes } from '../../src/enums';
 
 type FieldTypes = { field1: string; field2: number };
@@ -65,6 +65,10 @@ describe('executeFieldValidatorsOnValue', () => {
 
   it('returns the given error - RegExp based validator rule', () => {
     expect(helpers.executeFieldValidatorsOnValue(field1.value.slice(0, 2), fields, field1.validators)).toEqual(error3);
+  });
+
+  it('returns the default error - invalid error declaration on validator', () => {
+    expect(helpers.executeFieldValidatorsOnValue(field1.value, fields, [{ rule: /^.{333,}$/, error: null }])).toEqual(INVALID_FIELD);
   });
 });
 
