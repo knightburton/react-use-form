@@ -5,6 +5,12 @@ import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
 import type { Fields, Actions, Schema, HandleChangeHook, HandleSubmitHook, UseFormOutput } from './types';
 
+/**
+ * Returns stateful fields for forms and memoized callbacks to handle changes and validation.
+ *
+ * @param options Attributes to change the hook behaviour and init the form schema.
+ * @returns Fields state object and callback handlers.
+ */
 const useForm = <FieldTypes>({
   schema = DEFAULT_OPTIONS.SCHEMA,
   onSubmit = DEFAULT_OPTIONS.ON_SUBMIT,
