@@ -3,6 +3,14 @@ import { REQUIRED_REGEX, REQUIRED_ERROR, INVALID_FIELD } from '../constants';
 import type { Schema, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
 
 /**
+ * Checks if the given incoming parameter is exists or not as a usable value.
+ *
+ * @param value Field value to check the existance on.
+ * @returns Boolean based on the given value.
+ */
+export const getIsValueExists = <Value>(value: Value): boolean => (typeof value === 'string' ? REQUIRED_REGEX.test(value) : value !== null && value !== undefined);
+
+/**
  * Finds the error message for the given field.
  * If the error is a function then it will pass all the available fields and value to the user custom error handler.
  *
@@ -45,8 +53,7 @@ export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, f
  */
 export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: Fields<FieldTypes>): string => {
   const { required, requiredError, validators } = schemaField;
-  if (required && ((typeof value === 'string' && !REQUIRED_REGEX.test(value)) || value === null || value === undefined))
-    return getFieldValidatorError(value, fields, requiredError || REQUIRED_ERROR);
+  if (required && typeof required === 'boolean' && !getIsValueExists(value)) return getFieldValidatorError(value, fields, requiredError || REQUIRED_ERROR);
   if (validators && value) return executeFieldValidatorsOnValue(value, fields, validators);
   return '';
 };
