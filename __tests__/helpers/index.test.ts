@@ -24,12 +24,19 @@ const field1 = {
 const field2 = {
   field: 'field2',
   value: 96,
-  required: true,
+  required: (): boolean => true,
+  requiredError: errorRequired,
+};
+const field3 = {
+  field: 'field3',
+  value: '333333',
+  required: (_: any, { field1: { value: extra } }: any): boolean => !!extra,
   requiredError: errorRequired,
 };
 const fields = {
   field1: { value: field1.value, error: '' },
   field2: { value: field2.value, error: '' },
+  field3: { value: field3.value, error: '' },
 };
 
 describe('getIsValueExists', () => {
@@ -107,20 +114,40 @@ describe('validateFieldValue', () => {
     expect(helpers.validateFieldValue(field1.value, field1, fields)).toEqual('');
   });
 
+  it('returns an empty string - valid value + function where the require value will be false', () => {
+    expect(helpers.validateFieldValue(field3.value, field3, { ...fields, field1: { value: '', error: '' } })).toEqual('');
+  });
+
   it('returns the default required error string - empty string value', () => {
     expect(helpers.validateFieldValue('', field1, fields)).toEqual(REQUIRED_ERROR);
+  });
+
+  it('returns the default required error string - empty string value + function', () => {
+    expect(helpers.validateFieldValue('', { ...field3, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
   });
 
   it('returns the default required error string - undefined value', () => {
     expect(helpers.validateFieldValue(undefined, { ...field2, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
   });
 
+  it('returns the default required error string - undefined value + function', () => {
+    expect(helpers.validateFieldValue(undefined, { ...field3, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
+  });
+
   it('returns the default required error string - null value', () => {
     expect(helpers.validateFieldValue(null, { ...field2, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
   });
 
+  it('returns the default required error string - null value + function', () => {
+    expect(helpers.validateFieldValue(null, { ...field3, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
+  });
+
   it('returns a user specified required error string - null value', () => {
     expect(helpers.validateFieldValue(null, field2, fields)).toEqual(errorRequired);
+  });
+
+  it('returns a user specified required error string - null value + function', () => {
+    expect(helpers.validateFieldValue(null, field3, fields)).toEqual(errorRequired);
   });
 
   it('returns a user specified validator error string - null value', () => {
@@ -138,13 +165,13 @@ describe('validateFields', () => {
   });
 
   it('returns fields and valid flag - valid schema', () => {
-    expect(helpers.validateFields(fields, [field1, field2] as Schema<FieldTypes>)).toEqual({ validatedFields: fields, areFieldsValid: true });
+    expect(helpers.validateFields(fields, [field1, field2, field3] as Schema<FieldTypes>)).toEqual({ validatedFields: fields, areFieldsValid: true });
   });
 
   it('returns fields and invalid flag - invalid schema', () => {
     const field = { ...fields[0], value: `12` };
     const fieldWithError = { value: `12`, error: error3 };
-    expect(helpers.validateFields({ ...fields, field1: field }, [field1, field2] as Schema<FieldTypes>)).toEqual({
+    expect(helpers.validateFields({ ...fields, field1: field }, [field1, field2, field3] as Schema<FieldTypes>)).toEqual({
       validatedFields: { ...fields, field1: fieldWithError },
       areFieldsValid: false,
     });
@@ -157,7 +184,7 @@ describe('initalizer', () => {
   });
 
   it('returns the fields object - valid schema', () => {
-    expect(helpers.initalizer([field1, field2] as Schema<FieldTypes>)).toEqual(fields);
+    expect(helpers.initalizer([field1, field2, field3] as Schema<FieldTypes>)).toEqual(fields);
   });
 });
 
@@ -171,7 +198,7 @@ describe('reducer', () => {
   });
 
   it('returns the reseted state - reset action', () => {
-    expect(helpers.reducer({} as Fields<FieldTypes>, { type: ActionTypes.Reset, payload: [field1, field2] as Schema<FieldTypes> })).toEqual(fields);
+    expect(helpers.reducer({} as Fields<FieldTypes>, { type: ActionTypes.Reset, payload: [field1, field2, field3] as Schema<FieldTypes> })).toEqual(fields);
   });
 
   it('returns the validated state - validate action', () => {
