@@ -53,6 +53,8 @@ export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, f
  */
 export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: Fields<FieldTypes>): string => {
   const { required, requiredError, validators } = schemaField;
+  if (required && typeof required === 'function' && required(value, fields) && !getIsValueExists(value))
+    return getFieldValidatorError(value, fields, requiredError || REQUIRED_ERROR);
   if (required && typeof required === 'boolean' && !getIsValueExists(value)) return getFieldValidatorError(value, fields, requiredError || REQUIRED_ERROR);
   if (validators && value) return executeFieldValidatorsOnValue(value, fields, validators);
   return '';

@@ -64,7 +64,7 @@ The option itself is an `array of objects` and each object should look like this
 | --- | --- | --- | --- | --- |
 | field | `string` | Yes | - | Identifier of the field. |
 | value | `generic` | Yes | - | Defines the initial value of the field. |
-| required | `boolean` | No | `false` | Defines whether teh field is required or not during the validation. |
+| required | `boolean` or `function` | No | `false` | Defines whether the field is required or not during the validation. It can be a function where you can decide whether the field should be required or not based on other field values or the actual field value. |
 | requiredError | `function` or `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the error definitions [here](https://github.com/knightburton/react-use-form#validators). |
 | validators | `array` | No | `[]` | Defines the validation rulesets. Check the definitions [here](https://github.com/knightburton/react-use-form#validators). |
 

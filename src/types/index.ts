@@ -17,7 +17,7 @@ export type ValidationResult<FieldTypes> = {
 export type SchemaField<Key, Value, FieldTypes> = {
   field: Key;
   value: Value;
-  required?: boolean;
+  required?: boolean | ((value: Value, fields: Fields<FieldTypes>) => boolean);
   requiredError?: ValidatorError<Value, FieldTypes>;
   validators?: Validator<Value, FieldTypes>[];
 };
