@@ -32,6 +32,32 @@ const fields = {
   field2: { value: field2.value, error: '' },
 };
 
+describe('getIsValueExists', () => {
+  it('returns false on empty string', () => {
+    expect(helpers.getIsValueExists('')).toEqual(false);
+  });
+
+  it('returns true on valid string', () => {
+    expect(helpers.getIsValueExists(field1.value)).toEqual(true);
+  });
+
+  it('returns false on null', () => {
+    expect(helpers.getIsValueExists(null)).toEqual(false);
+  });
+
+  it('returns false on undefined', () => {
+    expect(helpers.getIsValueExists(undefined)).toEqual(false);
+  });
+
+  it('returns true on number', () => {
+    expect(helpers.getIsValueExists(field2.value)).toEqual(true);
+  });
+
+  it('returns true on array', () => {
+    expect(helpers.getIsValueExists([])).toEqual(true);
+  });
+});
+
 describe('getFieldValidatorError', () => {
   it('returns an empty string - no error passed', () => {
     expect(helpers.getFieldValidatorError(field1.value, fields)).toEqual('');
