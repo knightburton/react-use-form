@@ -23,14 +23,15 @@ export type SchemaField<Key, Value, FieldTypes> = {
 };
 export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaField<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
 export type OnSubmit<FieldTypes> = (fields: Fields<FieldTypes>) => void;
-export type HandleChangeHook = (event?: any) => void;
-export type HandleSubmitHook = (event?: any) => void;
-export type UpdateSchemaHook<FieldTypes> = (schema: Schema<FieldTypes>) => void;
+export type HandleChangeCallback = (event?: any) => void;
+export type HandleDirectChangeCallback = (name: string) => (value: any) => void;
+export type HandleSubmitCallback = (event?: any) => void;
+export type UpdateSchemaCallback<FieldTypes> = (schema: Schema<FieldTypes>) => void;
 export type UseFormOutput<FieldTypes> = {
   fields: Fields<FieldTypes>;
-  handleChange: HandleChangeHook;
-  handleSubmit: HandleSubmitHook;
-  updateSchema: UpdateSchemaHook<FieldTypes>;
+  handleChange: HandleChangeCallback | HandleDirectChangeCallback;
+  handleSubmit: HandleSubmitCallback;
+  updateSchema: UpdateSchemaCallback<FieldTypes>;
 };
 export type ActionMap<Map extends { [key: string]: any }> = {
   [Key in keyof Map]: { type: Key; payload: Map[Key] };
