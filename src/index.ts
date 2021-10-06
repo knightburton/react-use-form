@@ -43,10 +43,13 @@ const useForm = <FieldTypes>({
     [dispatch, fields, schema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
+  const updateSchema = useCallback(newSchema => dispatch({ type: ActionTypes.Reset, payload: newSchema }), [dispatch]);
+
   return {
     fields,
     handleChange,
     handleSubmit,
+    updateSchema,
   };
 };
 
