@@ -3,7 +3,7 @@ import { IUseForm } from './interfaces/index.interface';
 import { initalizer, reducer, validateFields } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
-import type { Fields, Actions, Schema, HandleChangeHook, HandleSubmitHook, UseFormOutput } from './types';
+import type { Fields, Actions, Schema, HandleChangeCallback, HandleDirectChangeCallback, HandleSubmitCallback, UpdateSchemaCallback, UseFormOutput } from './types';
 
 /**
  * Returns stateful fields for forms and memoized callbacks to handle changes and validation.
@@ -12,22 +12,22 @@ import type { Fields, Actions, Schema, HandleChangeHook, HandleSubmitHook, UseFo
  * @returns Fields state object and callback handlers.
  */
 const useForm = <FieldTypes>({
-  schema = DEFAULT_OPTIONS.SCHEMA,
-  onSubmit = DEFAULT_OPTIONS.ON_SUBMIT,
-  resetOnSubmit = DEFAULT_OPTIONS.RESET_ON_SUBMIT,
+  schema,
+  onSubmit,
+  resetOnSubmit,
+  useDirectOnChange,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
-}: IUseForm<FieldTypes> = {}): UseFormOutput<FieldTypes> => {
+}: IUseForm<FieldTypes>): UseFormOutput<FieldTypes> => {
   const [fields, dispatch] = useReducer<Reducer<Fields<FieldTypes>, Actions<FieldTypes>>, Schema<FieldTypes>>(reducer, schema, initalizer);
 
-  const handleChange = useCallback<HandleChangeHook>(
-    event => {
-      const { name, value } = event.target;
-      dispatch({ type: ActionTypes.Change, payload: { key: name, value } });
-    },
-    [dispatch],
+  const handleChangeCallback = useCallback<HandleChangeCallback>(
+    ({ target: { name, value } }) => dispatch({ type: ActionTypes.Change, payload: { key: name, value } }),
+    [],
   );
 
-  const handleSubmit = useCallback<HandleSubmitHook>(
+  const handleDirectChangeCallback = useCallback<HandleDirectChangeCallback>(name => value => dispatch({ type: ActionTypes.Change, payload: { key: name, value } }), []);
+
+  const handleSubmit = useCallback<HandleSubmitCallback>(
     event => {
       if (event && preventDefaultEventOnSubmit) event?.preventDefault();
 
@@ -36,18 +36,18 @@ const useForm = <FieldTypes>({
       if (areFieldsValid) {
         if (onSubmit) onSubmit(fields);
         if (resetOnSubmit) dispatch({ type: ActionTypes.Reset, payload: schema });
-      } else {
-        dispatch({ type: ActionTypes.Validate, payload: validatedFields });
+        return;
       }
+      dispatch({ type: ActionTypes.Validate, payload: validatedFields });
     },
-    [dispatch, fields, schema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
+    [fields, schema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
-  const updateSchema = useCallback(newSchema => dispatch({ type: ActionTypes.Reset, payload: newSchema }), [dispatch]);
+  const updateSchema = useCallback<UpdateSchemaCallback<FieldTypes>>(newSchema => dispatch({ type: ActionTypes.Reset, payload: newSchema }), []);
 
   return {
     fields,
-    handleChange,
+    handleChange: useDirectOnChange ? handleDirectChangeCallback : handleChangeCallback,
     handleSubmit,
     updateSchema,
   };
