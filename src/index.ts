@@ -14,6 +14,7 @@ import type { Fields, Actions, Schema, HandleChange, HandleSubmit, UpdateSchema,
 const useForm = <FieldTypes>({
   schema,
   onSubmit,
+  onError,
   resetOnSubmit,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
 }: IUseForm<FieldTypes>): UseFormOutput<FieldTypes> => {
@@ -32,9 +33,10 @@ const useForm = <FieldTypes>({
         if (resetOnSubmit) dispatch({ type: ActionTypes.Reset, payload: schema });
         return;
       }
+      if (onError) onError(validatedFields);
       dispatch({ type: ActionTypes.Validate, payload: validatedFields });
     },
-    [fields, schema, onSubmit, resetOnSubmit, preventDefaultEventOnSubmit],
+    [fields, schema, onSubmit, onError, resetOnSubmit, preventDefaultEventOnSubmit],
   );
 
   const updateSchema = useCallback<UpdateSchema<FieldTypes>>(newSchema => dispatch({ type: ActionTypes.Reset, payload: newSchema }), []);
