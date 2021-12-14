@@ -25,10 +25,6 @@ body {
   justify-content: space-between;
 }
 
-.item:not(:last-child) {
-  margin-right: 10px;
-}
-
 .description {
   color: rgba(0, 0, 0, 0.54);
   background-color: #ffffff;
@@ -43,10 +39,17 @@ body {
   position: relative;
 }
 
-.inputContainer {
-  position: relative;
-  margin-top: 5px;
-  padding-bottom: 20px;
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+.flex-grow {
+  flex: 1;
 }
 
 .label {
@@ -72,10 +75,22 @@ body {
   margin-left: 10px;
 }
 
-.update {
-  margin-top: 10px;
+.relative {
+  position: relative;
+  padding-bottom: 20px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.select {
+  width: 150px;
 }
 
 .input {
+  width: calc(100% - 5px);
+}
+
+.textarea {
   width: calc(100% - 5px);
 }

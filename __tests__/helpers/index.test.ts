@@ -206,6 +206,6 @@ describe('reducer', () => {
   });
 
   it('returns the updated state - change action - field1', () => {
-    expect(helpers.reducer(fields, { type: ActionTypes.Change, payload: { key: 'field1', value: `1` } })).toEqual({ ...fields, field1: { value: '1', error: '' } });
+    expect(helpers.reducer(fields, { type: ActionTypes.Change, payload: { key: 'field1', value: '1' } })).toEqual({ ...fields, field1: { value: '1', error: '' } });
   });
 });
