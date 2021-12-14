@@ -1,6 +1,10 @@
 # react-use-form
 
-React hook to handle form change and validation.
+[![Development Workflow](https://github.com/knightburton/react-use-form/actions/workflows/development.yml/badge.svg)](https://github.com/knightburton/react-use-form/actions/workflows/development.yml)
+![npm](https://img.shields.io/npm/v/@knightburton/react-use-form)
+![npm](https://img.shields.io/npm/dt/@knightburton/react-use-form)
+
+React hook to handle controlled form change and validation.
 
 ### Getting started
 #### Compatibility
