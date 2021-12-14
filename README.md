@@ -48,13 +48,15 @@ The hook returns an object with the following props.
 | fields | `object` | Generated fields state with values and errors. |
 | handleChange | `function` | The function is used to update a value inside the fields state. It accepts an input change event. |
 | handleSubmit | `function` | The function is used to submit the fields state for validation. It can accept an event, the default behaviour of that can be prevented with the `preventDefaultEventOnSubmit` option. |
+| updateSchema | `function` | The function is used to submit a new or updated fields state. |
 
 ### Options
 The hook behaviour can be modified with the following props.
 | Prop name | Type | Default Value | Description |
 | --- | --- | --- | --- |
-| schema | `object[]` | `[]` | Defines the initial fields state and provides the validation rulesets for later. Check the `schema` prop definitions [here](https://github.com/knightburton/react-use-form#schema-option) |
-| onSubmit | `function` | `undefined` | Function called when the validation was successful after `handleSubmit` triggered. |
+| schema | `object[]` | `[]` | Defines the initial fields state and provides the validation rulesets for later. Check the `schema` [prop definitions](https://github.com/knightburton/react-use-form#schema-option) |
+| onSubmit | `function` | `undefined` | Function called when the validation was successful after `handleSubmit` triggered. The `fields` state will be the first argument. |
+| onError | `function` | `undefined` | Function called when the validation was unsuccessful after `handleSubmit` triggered. The validated `fields` state will be the first argument. |
 | resetOnSubmit | `boolean` | `false` | Whether the field values should be reseted to the default value after successful `onSubmit` or not. |
 | preventDefaultEventOnSubmit | `boolean` | `true` | Whether the `handleSubmit` event default behaviour should be prevented (if event provided) or not. |
 
@@ -65,11 +67,15 @@ The option itself is an `array of objects` and each object should look like this
 | field | `string` | Yes | - | Identifier of the field. |
 | value | `generic` | Yes | - | Defines the initial value of the field. |
 | required | `boolean` or `function` | No | `false` | Defines whether the field is required or not during the validation. It can be a function where you can decide whether the field should be required or not based on other field values or the actual field value. |
-| requiredError | `function` or `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the error definitions [here](https://github.com/knightburton/react-use-form#validators). |
-| validators | `array` | No | `[]` | Defines the validation rulesets. Check the definitions [here](https://github.com/knightburton/react-use-form#validators). |
+| requiredError | `function` or `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the [error definitions](https://github.com/knightburton/react-use-form#validators). |
+| validators | `array` | No | `[]` | Defines the validation rulesets. Check the [definitions](https://github.com/knightburton/react-use-form#validators). |
 
 ### Validators
-
+This is an `array of objects` where each item defines rules and error messages:
+| Prop name | Type | Mandatory | Description |
+| --- | --- | --- | --- |
+| rule | `function` or `RegExp` | Yes | Defines the rule for field validation. It can be a function where the first arg is the corresponding field value and the second arg is the whole fields state for complex rules. The function must return `boolean` value. |
+| error | `function` or `string` | Yes | Defines the error message for invalid field. It can be a function where the first arg is the corresponding field value and the second arg is the whole fields state for complex message. The function must return `string` value. |
 
 ### Development
 Local development is broken into two parts (ideally using two terminal tabs).
