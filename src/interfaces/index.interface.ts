@@ -4,6 +4,5 @@ export interface IUseForm<FieldTypes> {
   schema: Schema<FieldTypes>;
   onSubmit?: OnSubmit<FieldTypes>;
   resetOnSubmit?: boolean;
-  useDirectOnChange?: boolean;
   preventDefaultEventOnSubmit?: boolean;
 }

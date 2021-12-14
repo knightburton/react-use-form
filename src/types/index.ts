@@ -23,26 +23,25 @@ export type SchemaField<Key, Value, FieldTypes> = {
 };
 export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaField<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
 export type OnSubmit<FieldTypes> = (fields: Fields<FieldTypes>) => void;
-export type HandleChangeCallback = (event?: any) => void;
-export type HandleDirectChangeCallback = (name: string) => (value: any) => void;
-export type HandleSubmitCallback = (event?: any) => void;
-export type UpdateSchemaCallback<FieldTypes> = (schema: Schema<FieldTypes>) => void;
+export type HandleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+export type HandleSubmit = (event?: React.FormEvent<HTMLFormElement>) => void;
+export type UpdateSchema<FieldTypes> = (schema: Schema<FieldTypes>) => void;
 export type UseFormOutput<FieldTypes> = {
   fields: Fields<FieldTypes>;
-  handleChange: HandleChangeCallback | HandleDirectChangeCallback;
-  handleSubmit: HandleSubmitCallback;
-  updateSchema: UpdateSchemaCallback<FieldTypes>;
+  handleChange: HandleChange;
+  handleSubmit: HandleSubmit;
+  updateSchema: UpdateSchema<FieldTypes>;
 };
 export type ActionMap<Map extends { [key: string]: any }> = {
   [Key in keyof Map]: { type: Key; payload: Map[Key] };
 };
-export type PayloadChange<FieldTypes extends { [key: string]: any }> = {
+export type PayloadChange = {
   key: string;
-  value: FieldTypes[keyof FieldTypes];
+  value: any;
 };
 export type Payload<FieldTypes> = {
   [ActionTypes.Reset]: Schema<FieldTypes>;
   [ActionTypes.Validate]: Fields<FieldTypes>;
-  [ActionTypes.Change]: PayloadChange<FieldTypes>;
+  [ActionTypes.Change]: PayloadChange;
 };
 export type Actions<FieldTypes> = ActionMap<Payload<FieldTypes>>[keyof ActionMap<Payload<FieldTypes>>];
