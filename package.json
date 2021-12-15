@@ -92,24 +92,24 @@
     "transform": {
       "\\.(ts|tsx)$": "ts-jest"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testRegex": "(/test/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
     ],
     "setupFiles": [
-      "<rootDir>/__tests__/setupTests.ts"
+      "<rootDir>/test/setupTests.ts"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
       "<rootDir>/dist/",
-      "<rootDir>/__tests__/setupTests.ts"
+      "<rootDir>/test/setupTests.ts"
     ],
     "coveragePathIgnorePatterns": [
       "<rootDir>/node_modules/",
       "<rootDir>/dist/",
-      "<rootDir>/__tests__/setupTests.ts"
+      "<rootDir>/test/setupTests.ts"
     ]
   }
 }
