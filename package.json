@@ -19,7 +19,10 @@
     "typescript",
     "form",
     "form-validation",
-    "form-handler"
+    "form-handler",
+    "form-hook",
+    "use-form",
+    "use-form-hook"
   ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
