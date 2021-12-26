@@ -59,7 +59,7 @@ The hook behaviour can be modified with the following props.
 | Prop name | Type | Default Value | Description |
 | --- | --- | --- | --- |
 | schema | `object[]` | `[]` | Defines the initial fields state and provides the validation rulesets for later. Check the `schema` [prop definitions](https://github.com/knightburton/react-use-form#schema-option) |
-| onSubmit | `function` | `undefined` | Function called when the validation was successful after `handleSubmit` triggered. The `fields` state will be the first argument. |
+| onSubmit | `function` | `undefined` | Function called when the validation was successful after `handleSubmit` triggered. The values from `fields` state will be the first argument. |
 | onError | `function` | `undefined` | Function called when the validation was unsuccessful after `handleSubmit` triggered. The validated `fields` state will be the first argument. |
 | resetOnSubmit | `boolean` | `false` | Whether the field values should be reseted to the default value after successful `onSubmit` or not. |
 | preventDefaultEventOnSubmit | `boolean` | `true` | Whether the `handleSubmit` event default behaviour should be prevented (if event provided) or not. |

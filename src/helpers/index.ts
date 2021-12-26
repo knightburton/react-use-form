@@ -108,7 +108,7 @@ export const initalizer = <FieldTypes>(schema: Schema<FieldTypes>): Fields<Field
  * @param action Current action that should go through in the reducer.
  * @returns A new state object.
  */
-export const reducer = <FieldTypes>(fields: Fields<FieldTypes>, action: Actions<FieldTypes>): Fields<FieldTypes> => {
+export const reducer = <FieldTypes extends { [key: string]: any }>(fields: Fields<FieldTypes>, action: Actions<FieldTypes>): Fields<FieldTypes> => {
   switch (action.type) {
     case ActionTypes.Reset:
       return initalizer(action.payload);
@@ -126,3 +126,12 @@ export const reducer = <FieldTypes>(fields: Fields<FieldTypes>, action: Actions<
       return fields;
   }
 };
+
+/**
+ * Extracts all the values from the fields object and reduce them into a smaller key value pair based object.
+ *
+ * @param fields Actual field objects with values and errors.
+ * @returns Actual field object with values only.
+ */
+export const extractFieldValues = <FieldTypes extends { [key: string]: any }>(fields: Fields<FieldTypes>): FieldTypes =>
+  Object.keys(fields).reduce((acc, field) => ({ ...acc, [field]: fields[field].value }), {} as FieldTypes);

@@ -1,6 +1,6 @@
 import { useReducer, useCallback, Reducer } from 'react';
 import { IUseForm } from './interfaces/index.interface';
-import { initalizer, reducer, validateFields } from './helpers';
+import { initalizer, reducer, validateFields, extractFieldValues } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
 import type { Fields, Actions, Schema, HandleChange, HandleSubmit, UpdateSchema, UseFormOutput } from './types';
@@ -29,7 +29,7 @@ const useForm = <FieldTypes>({
       const { validatedFields, areFieldsValid } = validateFields(fields, schema);
 
       if (areFieldsValid) {
-        if (onSubmit) onSubmit(fields);
+        if (onSubmit) onSubmit(extractFieldValues(fields));
         if (resetOnSubmit) dispatch({ type: ActionTypes.Reset, payload: schema });
         return;
       }

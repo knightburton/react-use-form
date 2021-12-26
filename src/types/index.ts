@@ -22,7 +22,7 @@ export type SchemaField<Key, Value, FieldTypes> = {
   validators?: Validator<Value, FieldTypes>[];
 };
 export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaField<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
-export type OnSubmit<FieldTypes> = (fields: Fields<FieldTypes>) => void;
+export type OnSubmit<FieldTypes> = (fields: FieldTypes) => void;
 export type OnError<FieldTypes> = (fields: Fields<FieldTypes>) => void;
 export type HandleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 export type HandleSubmit = (event?: React.FormEvent<HTMLFormElement>) => void;

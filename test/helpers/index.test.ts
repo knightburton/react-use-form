@@ -179,7 +179,7 @@ describe('validateFields', () => {
 });
 
 describe('initalizer', () => {
-  it('returns and empty fields object - empty schema', () => {
+  it('returns an empty fields object - empty schema', () => {
     expect(helpers.initalizer([] as Schema<FieldTypes>)).toEqual({});
   });
 
@@ -207,5 +207,15 @@ describe('reducer', () => {
 
   it('returns the updated state - change action - field1', () => {
     expect(helpers.reducer(fields, { type: ActionTypes.Change, payload: { key: 'field1', value: '1' } })).toEqual({ ...fields, field1: { value: '1', error: '' } });
+  });
+});
+
+describe('extractFieldValues', () => {
+  it('returns an empty object - empty fields', () => {
+    expect(helpers.extractFieldValues({})).toEqual({});
+  });
+
+  it('returns a key value paierd object - valid fields state', () => {
+    expect(helpers.extractFieldValues(fields)).toEqual({ field1: field1.value, field2: field2.value, field3: field3.value });
   });
 });
