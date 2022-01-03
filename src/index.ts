@@ -5,6 +5,8 @@ import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
 import type { Fields, Actions, Schema, HandleChange, HandleSubmit, UpdateSchema, UseFormOutput } from './types';
 
+export type { Schema, Fields, HandleChange, HandleSubmit, UpdateSchema, UseFormOutput } from './types';
+
 /**
  * Returns stateful fields for forms and memoized callbacks to handle changes and validation.
  *
