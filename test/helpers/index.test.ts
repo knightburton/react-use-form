@@ -30,7 +30,7 @@ const field2 = {
 const field3 = {
   field: 'field3',
   value: '333333',
-  required: (_: any, { field1: { value: extra } }: any): boolean => !!extra,
+  required: (_: any, { field1: extra }: any): boolean => !!extra,
   requiredError: errorRequired,
 };
 const fields = {

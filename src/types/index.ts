@@ -4,8 +4,8 @@ export type Field<Value> = { value: Value; error: string };
 export type Fields<FieldTypes> = {
   [Key in keyof FieldTypes]: Field<FieldTypes[Key]>;
 };
-export type ValidatorRule<Value, FieldTypes> = ((value: Value, fields: Fields<FieldTypes>) => boolean) | RegExp;
-export type ValidatorError<Value, FieldTypes> = ((value: Value, fields: Fields<FieldTypes>) => string) | string;
+export type ValidatorRule<Value, FieldTypes> = ((value: Value, fields: FieldTypes) => boolean) | RegExp;
+export type ValidatorError<Value, FieldTypes> = ((value: Value, fields: FieldTypes) => string) | string;
 export type Validator<Value, FieldTypes> = {
   rule: ValidatorRule<Value, FieldTypes>;
   error: ValidatorError<Value, FieldTypes>;
@@ -17,7 +17,7 @@ export type ValidationResult<FieldTypes> = {
 export type SchemaField<Key, Value, FieldTypes> = {
   field: Key;
   value: Value;
-  required?: boolean | ((value: Value, fields: Fields<FieldTypes>) => boolean);
+  required?: boolean | ((value: Value, fields: FieldTypes) => boolean);
   requiredError?: ValidatorError<Value, FieldTypes>;
   validators?: Validator<Value, FieldTypes>[];
 };

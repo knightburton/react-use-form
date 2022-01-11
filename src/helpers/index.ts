@@ -3,6 +3,15 @@ import { REQUIRED_REGEX, REQUIRED_ERROR, INVALID_FIELD } from '../constants';
 import type { Schema, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
 
 /**
+ * Extracts all the values from the fields object and reduce them into a smaller key value pair based object.
+ *
+ * @param fields Actual field objects with values and errors.
+ * @returns Actual field object with values only.
+ */
+export const extractFieldValues = <FieldTypes extends { [key: string]: any }>(fields: Fields<FieldTypes>): FieldTypes =>
+  Object.keys(fields).reduce((acc, field) => ({ ...acc, [field]: fields[field].value }), {} as FieldTypes);
+
+/**
  * Checks if the given incoming parameter is exists or not as a usable value.
  *
  * @param value Field value to check the existance on.
@@ -19,7 +28,7 @@ export const getIsValueExists = <Value>(value: Value): boolean => (typeof value 
  * @param error Actual error that will be used or executed.
  * @returns Error message or empty string if no error message passed.
  */
-export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: Fields<FieldTypes>, error?: ValidatorError<Value, FieldTypes>): string => {
+export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: FieldTypes, error?: ValidatorError<Value, FieldTypes>): string => {
   if (typeof error === 'function') return error(value, fields);
   if (typeof error === 'string') return error;
   return '';
@@ -33,7 +42,7 @@ export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: 
  * @param validators All the validators that associated with the actual field.
  * @returns An error string in case of invalid validator or an empty string otherwise.
  */
-export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, fields: Fields<FieldTypes>, validators: Validator<Value, FieldTypes>[]): string => {
+export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, fields: FieldTypes, validators: Validator<Value, FieldTypes>[]): string => {
   const invalidValidator = validators.find(({ rule }) => {
     if (typeof rule === 'function') return !rule(value, fields);
     if (rule instanceof RegExp && typeof value === 'string') return !rule.test(value);
@@ -51,7 +60,7 @@ export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, f
  * @param fields All the fields to pass to the custom validators.
  * @returns An error message in case of invalid field value, or an empty string otherwise.
  */
-export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: Fields<FieldTypes>): string => {
+export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaField: SchemaField<Key, Value, FieldTypes>, fields: FieldTypes): string => {
   const { required, requiredError, validators } = schemaField;
   if (required && typeof required === 'function' && required(value, fields) && !getIsValueExists(value))
     return getFieldValidatorError(value, fields, requiredError || REQUIRED_ERROR);
@@ -68,11 +77,12 @@ export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaF
  * @param schema Inner state schema to get the fields from.
  * @returns The validated state fields and a flag that indicates the whole state is valid or not.
  */
-export const validateFields = <FieldTypes>(fields: Fields<FieldTypes>, schema: Schema<FieldTypes>): ValidationResult<FieldTypes> =>
-  schema.reduce(
+export const validateFields = <FieldTypes>(fields: Fields<FieldTypes>, schema: Schema<FieldTypes>): ValidationResult<FieldTypes> => {
+  const extractedFields = extractFieldValues<FieldTypes>(fields);
+  return schema.reduce(
     (o: ValidationResult<FieldTypes>, schemaField) => {
-      const { value } = fields[schemaField.field];
-      const error = validateFieldValue(value, schemaField, fields);
+      const value = extractedFields[schemaField.field];
+      const error = validateFieldValue(value, schemaField, extractedFields);
       const validatedFields = {
         ...o.validatedFields,
         [schemaField.field]: { value, error },
@@ -82,6 +92,7 @@ export const validateFields = <FieldTypes>(fields: Fields<FieldTypes>, schema: S
     },
     { validatedFields: {} as Fields<FieldTypes>, areFieldsValid: true },
   );
+};
 
 /**
  * Creates the inner state schema with init values.
@@ -126,12 +137,3 @@ export const reducer = <FieldTypes extends { [key: string]: any }>(fields: Field
       return fields;
   }
 };
-
-/**
- * Extracts all the values from the fields object and reduce them into a smaller key value pair based object.
- *
- * @param fields Actual field objects with values and errors.
- * @returns Actual field object with values only.
- */
-export const extractFieldValues = <FieldTypes extends { [key: string]: any }>(fields: Fields<FieldTypes>): FieldTypes =>
-  Object.keys(fields).reduce((acc, field) => ({ ...acc, [field]: fields[field].value }), {} as FieldTypes);

@@ -78,8 +78,8 @@ The option itself is an `array of objects` and each object should look like this
 This is an `array of objects` where each item defines rules and error messages:
 | Prop name | Type | Mandatory | Description |
 | --- | --- | --- | --- |
-| rule | `function` or `RegExp` | Yes | Defines the rule for field validation. It can be a function where the first arg is the corresponding field value and the second arg is the whole fields state for complex rules. The function must return `boolean` value. |
-| error | `function` or `string` | Yes | Defines the error message for invalid field. It can be a function where the first arg is the corresponding field value and the second arg is the whole fields state for complex message. The function must return `string` value. |
+| rule | `function` or `RegExp` | Yes | Defines the rule for field validation. It can be a function where the first arg is the corresponding field value and the second arg is the field values for complex rules. The function must return `boolean` value. |
+| error | `function` or `string` | Yes | Defines the error message for invalid field. It can be a function where the first arg is the corresponding field value and the second arg is the field values for complex message. The function must return `string` value. |
 
 ### Development
 Local development is broken into two parts (ideally using two terminal tabs).
