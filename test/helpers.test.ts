@@ -1,7 +1,7 @@
-import * as helpers from '../../src/helpers';
-import { Fields, Schema, Actions } from '../../src/types';
-import { REQUIRED_ERROR, INVALID_FIELD } from '../../src/constants';
-import { ActionTypes } from '../../src/enums';
+import * as helpers from '../src/helpers';
+import { Fields, Schema, Actions } from '../src/types';
+import { REQUIRED_ERROR, INVALID_FIELD } from '../src/constants';
+import { ActionTypes } from '../src/enums';
 
 type FieldTypes = { field1: string; field2: number };
 const error3 = 'Length must be greater than 3.';

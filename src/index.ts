@@ -1,5 +1,5 @@
 import { useReducer, useCallback, Reducer } from 'react';
-import { IUseForm } from './interfaces/index.interface';
+import { IUseForm } from './interfaces';
 import { initalizer, reducer, validateFields, extractFieldValues } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';

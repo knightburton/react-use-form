@@ -1,6 +1,6 @@
-import { ActionTypes } from '../enums';
-import { REQUIRED_REGEX, REQUIRED_ERROR, INVALID_FIELD } from '../constants';
-import type { Schema, ValidatorRule, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
+import { ActionTypes } from './enums';
+import { REQUIRED_REGEX, REQUIRED_ERROR, INVALID_FIELD } from './constants';
+import type { Schema, ValidatorRule, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from './types';
 
 /**
  * Extracts all the values from the fields object and reduce them into a smaller key value pair based object.

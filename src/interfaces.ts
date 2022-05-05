@@ -1,4 +1,4 @@
-import type { Schema, OnSubmit, OnError } from '../types';
+import type { Schema, OnSubmit, OnError } from './types';
 
 export interface IUseForm<FieldTypes> {
   schema: Schema<FieldTypes>;

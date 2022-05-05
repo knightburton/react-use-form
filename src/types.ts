@@ -1,4 +1,4 @@
-import { ActionTypes } from '../enums';
+import { ActionTypes } from './enums';
 
 export type Field<Value> = { value: Value; error: string };
 export type Fields<FieldTypes> = {
