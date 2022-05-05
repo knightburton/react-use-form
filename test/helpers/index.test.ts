@@ -83,6 +83,28 @@ describe('getFieldValidatorError', () => {
   });
 });
 
+describe('getFieldValidatorResult', () => {
+  it('returns true boolean value - false validator rule', () => {
+    expect(helpers.getFieldValidatorResult(/^.{3,}$/, field1.value, fields)).toEqual(true);
+  });
+
+  it('returns true boolean value - function based validator rule', () => {
+    expect(helpers.getFieldValidatorResult(field1.validators[1].rule, field1.value, fields)).toEqual(true);
+  });
+
+  it('returns true boolean value - RegExp based validator rule', () => {
+    expect(helpers.getFieldValidatorResult(field1.validators[0].rule, field1.value, fields)).toEqual(true);
+  });
+
+  it('returns false boolean value - function based validator rule', () => {
+    expect(helpers.getFieldValidatorResult(field1.validators[2].rule, '66666', fields)).toEqual(false);
+  });
+
+  it('returns false boolean value - RegExp based validator rule', () => {
+    expect(helpers.getFieldValidatorResult(field1.validators[0].rule, '22', fields)).toEqual(false);
+  });
+});
+
 describe('executeFieldValidatorsOnValue', () => {
   it('returns an empty string - empty validators array', () => {
     expect(helpers.executeFieldValidatorsOnValue(field1.value, fields, [])).toEqual('');

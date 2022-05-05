@@ -1,6 +1,6 @@
 import { ActionTypes } from '../enums';
 import { REQUIRED_REGEX, REQUIRED_ERROR, INVALID_FIELD } from '../constants';
-import type { Schema, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
+import type { Schema, ValidatorRule, ValidatorError, SchemaField, Fields, Actions, Validator, ValidationResult } from '../types';
 
 /**
  * Extracts all the values from the fields object and reduce them into a smaller key value pair based object.
@@ -35,6 +35,21 @@ export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: 
 };
 
 /**
+ * Checks whether the given field is valid on the given validator rule.
+ *
+ * @param rule Actual validator rule to check and run on the value.
+ * @param value Field value to execute the validator on
+ * @param fields All the fields to pass to the custom validators.
+ * @returns A boolean value based on that the field is valid or not.
+ */
+export const getFieldValidatorResult = <Value, FieldTypes>(rule: ValidatorRule<Value, FieldTypes>, value: Value, fields: FieldTypes): boolean => {
+  if (typeof rule === 'function') return rule(value, fields);
+  if (rule instanceof RegExp && typeof value === 'string') return rule.test(value);
+  // If there is no valid rule consider the field as valid.
+  return true;
+};
+
+/**
  * Runs all the given validator on the given field value and finds the error for the invalid one.
  *
  * @param value Field value to execute the validator on.
@@ -43,12 +58,7 @@ export const getFieldValidatorError = <Value, FieldTypes>(value: Value, fields: 
  * @returns An error string in case of invalid validator or an empty string otherwise.
  */
 export const executeFieldValidatorsOnValue = <Value, FieldTypes>(value: Value, fields: FieldTypes, validators: Validator<Value, FieldTypes>[]): string => {
-  const invalidValidator = validators.find(({ rule }) => {
-    if (typeof rule === 'function') return !rule(value, fields);
-    if (rule instanceof RegExp && typeof value === 'string') return !rule.test(value);
-    return false;
-  });
-
+  const invalidValidator = validators.find(({ rule }) => !getFieldValidatorResult(rule, value, fields));
   return invalidValidator ? getFieldValidatorError(value, fields, invalidValidator.error || INVALID_FIELD) : '';
 };
 
