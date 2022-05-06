@@ -71,16 +71,16 @@ The option itself is an `array of objects` and each object should look like this
 | --- | --- | --- | --- | --- |
 | field | `string` | Yes | - | Identifier of the field. |
 | value | `generic` | Yes | - | Defines the initial value of the field. |
-| required | `boolean` or [Validator](https://github.com/knightburton/react-use-form#validators) `function` | No | `false` | Defines whether the field is required or not during the validation. It can be a special validator where the `error` is optional and the fallback will be the `requiredError` or the default builtin error. It can be a function where you can decide whether the field should be required or not based on other field values or the actual field value. |
-| requiredError | `function` or `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the [error definitions](https://github.com/knightburton/react-use-form#validators). |
+| required | `boolean` / [Validator](https://github.com/knightburton/react-use-form#validators) / `function` | No | `false` | Defines whether the field is required or not during the validation. It can be a special validator where the `error` is optional and the fallback will be the `requiredError` or the default builtin error. It can be a function where you can decide whether the field should be required or not based on other field values or the actual field value. |
+| requiredError | `function` / `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the [error definitions](https://github.com/knightburton/react-use-form#validators). |
 | validators | `array` | No | `[]` | Defines the validation rulesets. Check the [definitions](https://github.com/knightburton/react-use-form#validators). |
 
 ### Validators
 This is an `array of objects` where each item defines rules and error messages:
 | Prop name | Type | Mandatory | Description |
 | --- | --- | --- | --- |
-| rule | `function` or `RegExp` | Yes | Defines the rule for field validation. It can be a function where the first arg is the corresponding field value and the second arg is the field values for complex rules. The function must return `boolean` value. |
-| error | `function` or `string` | Yes | Defines the error message for invalid field. It can be a function where the first arg is the corresponding field value and the second arg is the field values for complex message. The function must return `string` value. |
+| rule | `function` / `RegExp` | Yes | Defines the rule for field validation. It can be a function where the first arg is the corresponding field value and the second arg is the field values for complex rules. The function must return `boolean` value. |
+| error | `function` / `string` | Yes (No, if used for required.) | Defines the error message for invalid field. It can be a function where the first arg is the corresponding field value and the second arg is the field values for complex message. The function must return `string` value. |
 
 ### Development
 Local development is broken into two parts (ideally using two terminal tabs).
