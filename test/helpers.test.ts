@@ -8,6 +8,7 @@ const error3 = 'Length must be greater than 3.';
 const error125 = (value: string) => `${value} length is not <= 125`;
 const error7 = (value: string, fields: Fields<FieldTypes>) => `${value} length is not === 7. FIELDS: ${JSON.stringify(fields)}`;
 const errorRequired = 'I do not like this.';
+const error4 = 'This is not 4!';
 const field1 = {
   field: 'field1',
   value: '0112233',
@@ -33,10 +34,17 @@ const field3 = {
   required: (_: any, { field1: extra }: any): boolean => !!extra,
   requiredError: errorRequired,
 };
+const field4 = {
+  field: 'field4',
+  value: '4444',
+  required: { rule: (_: any, { field1: extra }: any): boolean => !!extra, error: error4 },
+  requiredError: errorRequired,
+};
 const fields = {
   field1: { value: field1.value, error: '' },
   field2: { value: field2.value, error: '' },
   field3: { value: field3.value, error: '' },
+  field4: { value: field4.value, error: '' },
 };
 
 describe('getIsValueExists', () => {
@@ -140,8 +148,16 @@ describe('validateFieldValue', () => {
     expect(helpers.validateFieldValue(field3.value, field3, { ...fields, field1: { value: '', error: '' } })).toEqual('');
   });
 
+  it('returns an empty string - valid value + validator', () => {
+    expect(helpers.validateFieldValue(field4.value, field4, fields)).toEqual('');
+  });
+
   it('returns the default required error string - empty string value', () => {
     expect(helpers.validateFieldValue('', field1, fields)).toEqual(REQUIRED_ERROR);
+  });
+
+  it('returns the default required error string - empty string value + validator', () => {
+    expect(helpers.validateFieldValue('', { ...field4, required: { rule: () => false }, requiredError: undefined }, fields)).toEqual(REQUIRED_ERROR);
   });
 
   it('returns the default required error string - empty string value + function', () => {
@@ -168,12 +184,20 @@ describe('validateFieldValue', () => {
     expect(helpers.validateFieldValue(null, field2, fields)).toEqual(errorRequired);
   });
 
+  it('returns a user specified required error string - null value + validator', () => {
+    expect(helpers.validateFieldValue(null, { ...field4, required: { rule: () => false }, requiredError: field4.requiredError }, fields)).toEqual(errorRequired);
+  });
+
   it('returns a user specified required error string - null value + function', () => {
     expect(helpers.validateFieldValue(null, field3, fields)).toEqual(errorRequired);
   });
 
   it('returns a user specified validator error string - null value', () => {
     expect(helpers.validateFieldValue('12', field1, fields)).toEqual(error3);
+  });
+
+  it('returns a user specified required validator error string - null value + validator', () => {
+    expect(helpers.validateFieldValue(null, { ...field4, required: { rule: () => false, error: field4.required.error } }, fields)).toEqual(error4);
   });
 
   it('returns a user specified validator error string - long value', () => {
@@ -187,13 +211,13 @@ describe('validateFields', () => {
   });
 
   it('returns fields and valid flag - valid schema', () => {
-    expect(helpers.validateFields(fields, [field1, field2, field3] as Schema<FieldTypes>)).toEqual({ validatedFields: fields, areFieldsValid: true });
+    expect(helpers.validateFields(fields, [field1, field2, field3, field4] as Schema<FieldTypes>)).toEqual({ validatedFields: fields, areFieldsValid: true });
   });
 
   it('returns fields and invalid flag - invalid schema', () => {
     const field = { ...fields[0], value: `12` };
     const fieldWithError = { value: `12`, error: error3 };
-    expect(helpers.validateFields({ ...fields, field1: field }, [field1, field2, field3] as Schema<FieldTypes>)).toEqual({
+    expect(helpers.validateFields({ ...fields, field1: field }, [field1, field2, field3, field4] as Schema<FieldTypes>)).toEqual({
       validatedFields: { ...fields, field1: fieldWithError },
       areFieldsValid: false,
     });
@@ -206,7 +230,7 @@ describe('initalizer', () => {
   });
 
   it('returns the fields object - valid schema', () => {
-    expect(helpers.initalizer([field1, field2, field3] as Schema<FieldTypes>)).toEqual(fields);
+    expect(helpers.initalizer([field1, field2, field3, field4] as Schema<FieldTypes>)).toEqual(fields);
   });
 });
 
@@ -220,7 +244,7 @@ describe('reducer', () => {
   });
 
   it('returns the reseted state - reset action', () => {
-    expect(helpers.reducer({} as Fields<FieldTypes>, { type: ActionTypes.Reset, payload: [field1, field2, field3] as Schema<FieldTypes> })).toEqual(fields);
+    expect(helpers.reducer({} as Fields<FieldTypes>, { type: ActionTypes.Reset, payload: [field1, field2, field3, field4] as Schema<FieldTypes> })).toEqual(fields);
   });
 
   it('returns the validated state - validate action', () => {
@@ -238,6 +262,6 @@ describe('extractFieldValues', () => {
   });
 
   it('returns a key value paierd object - valid fields state', () => {
-    expect(helpers.extractFieldValues(fields)).toEqual({ field1: field1.value, field2: field2.value, field3: field3.value });
+    expect(helpers.extractFieldValues(fields)).toEqual({ field1: field1.value, field2: field2.value, field3: field3.value, field4: field4.value });
   });
 });
