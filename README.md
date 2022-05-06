@@ -47,6 +47,7 @@ For more detailed example check the [example](./example) directory.
 
 ### Output
 The hook returns an object with the following props.
+
 | Prop name | Type | Description |
 | --- | --- | --- |
 | fields | `object` | Generated fields state with values and errors. |
@@ -70,7 +71,7 @@ The option itself is an `array of objects` and each object should look like this
 | --- | --- | --- | --- | --- |
 | field | `string` | Yes | - | Identifier of the field. |
 | value | `generic` | Yes | - | Defines the initial value of the field. |
-| required | `boolean` or `function` | No | `false` | Defines whether the field is required or not during the validation. It can be a function where you can decide whether the field should be required or not based on other field values or the actual field value. |
+| required | `boolean` or [Validator](https://github.com/knightburton/react-use-form#validators) `function` | No | `false` | Defines whether the field is required or not during the validation. It can be a special validator where the `error` is optional and the fallback will be the `requiredError` or the default builtin error. It can be a function where you can decide whether the field should be required or not based on other field values or the actual field value. |
 | requiredError | `function` or `string` | No | `This field is required.` | Defines the returned error when a field marked as required. Check the [error definitions](https://github.com/knightburton/react-use-form#validators). |
 | validators | `array` | No | `[]` | Defines the validation rulesets. Check the [definitions](https://github.com/knightburton/react-use-form#validators). |
 
