@@ -52,7 +52,7 @@ The hook returns an object with the following props.
 | --- | --- | --- |
 | fields | `object` | Generated fields state with values and errors. |
 | handleChange | `function` | The function is used to update a value inside the fields state. It accepts an input change event. |
-| handleSubmit | `function` | The function is used to submit the fields state for validation. It can accept an event, the default behaviour of that can be prevented with the `preventDefaultEventOnSubmit` option. |
+| handleSubmit | `function` | The function is used to submit the fields state for validation. It can accept an event, the behaviour of that can be prevented with the `preventDefaultEventOnSubmit` and `stopPropagationEventOnSubmit` option. |
 | updateSchema | `function` | The function is used to submit a new or updated fields state. |
 
 ### Options
@@ -64,6 +64,7 @@ The hook behaviour can be modified with the following props.
 | onError | `function` | `undefined` | Function called when the validation was unsuccessful after `handleSubmit` triggered. The validated `fields` state will be the first argument. |
 | resetOnSubmit | `boolean` | `false` | Whether the field values should be reseted to the default value after successful `onSubmit` or not. |
 | preventDefaultEventOnSubmit | `boolean` | `true` | Whether the `handleSubmit` event default behaviour should be prevented (if event provided) or not. |
+| stopPropagationEventOnSubmit | `boolean` | `true` | Whether the `handleSubmit` event propagation should be prevented (if event provided) or not. |
 
 ### Schema Option
 The option itself is an `array of objects` and each object should look like this:

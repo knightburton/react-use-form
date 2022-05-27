@@ -19,6 +19,7 @@ const useForm = <FieldTypes>({
   onError,
   resetOnSubmit,
   preventDefaultEventOnSubmit = DEFAULT_OPTIONS.PREVENT_DEFAULT_EVENT_ON_SUBMIT,
+  stopPropagationEventOnSubmit = DEFAULT_OPTIONS.STOP_PROPAGATION_EVENT_ON_SUBMIT,
 }: IUseForm<FieldTypes>): UseFormOutput<FieldTypes> => {
   const [fields, dispatch] = useReducer<Reducer<Fields<FieldTypes>, Actions<FieldTypes>>, Schema<FieldTypes>>(reducer, schema, initalizer);
 
@@ -27,6 +28,7 @@ const useForm = <FieldTypes>({
   const handleSubmit = useCallback<HandleSubmit>(
     event => {
       if (event && preventDefaultEventOnSubmit) event?.preventDefault();
+      if (event && stopPropagationEventOnSubmit) event?.stopPropagation();
 
       const { validatedFields, areFieldsValid } = validateFields(fields, schema);
 
@@ -38,7 +40,7 @@ const useForm = <FieldTypes>({
       if (onError) onError(validatedFields);
       dispatch({ type: ActionTypes.Validate, payload: validatedFields });
     },
-    [fields, schema, onSubmit, onError, resetOnSubmit, preventDefaultEventOnSubmit],
+    [fields, schema, onSubmit, onError, resetOnSubmit, preventDefaultEventOnSubmit, stopPropagationEventOnSubmit],
   );
 
   const updateSchema = useCallback<UpdateSchema<FieldTypes>>(newSchema => dispatch({ type: ActionTypes.Reset, payload: newSchema }), []);

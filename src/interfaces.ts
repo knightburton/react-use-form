@@ -6,4 +6,5 @@ export interface IUseForm<FieldTypes> {
   onError?: OnError<FieldTypes>;
   resetOnSubmit?: boolean;
   preventDefaultEventOnSubmit?: boolean;
+  stopPropagationEventOnSubmit?: boolean;
 }

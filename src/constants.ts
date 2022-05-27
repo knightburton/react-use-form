@@ -6,4 +6,5 @@ export const INVALID_FIELD = 'This field is not valid.';
 // Default option values for the main useForm hook.
 export const DEFAULT_OPTIONS = {
   PREVENT_DEFAULT_EVENT_ON_SUBMIT: true,
+  STOP_PROPAGATION_EVENT_ON_SUBMIT: true,
 };
