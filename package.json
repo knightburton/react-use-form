@@ -1,6 +1,6 @@
 {
   "name": "@knightburton/react-use-form",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "React hook to handle form change and validation.",
   "homepage": "https://github.com/knightburton/react-use-form#readme",
   "repository": {
