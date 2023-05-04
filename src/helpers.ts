@@ -14,7 +14,7 @@ export const extractFieldValues = <FieldTypes extends { [key: string]: any }>(fi
 /**
  * Checks if the given incoming parameter is exists or not as a usable value.
  *
- * @param value Field value to check the existance on.
+ * @param value Field value to check the existence on.
  * @returns Boolean based on the given value.
  */
 export const getIsValueExists = <Value>(value: Value): boolean => (typeof value === 'string' ? REQUIRED_REGEX.test(value) : value !== null && value !== undefined);
@@ -82,7 +82,7 @@ export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaF
 };
 
 /**
- * Validates the given fields based on the validators in the schema and determines wheater the whole fields attribute is valid or not.
+ * Validates the given fields based on the validators in the schema and determines whether the whole fields attribute is valid or not.
  * (The fields are overall valid if there is no invalid field in it.)
  *
  * @param fields Actual field objects with values and errors to validate.
@@ -112,7 +112,7 @@ export const validateFields = <FieldTypes extends { [key: string]: any }>(fields
  * @param schema State schema to start with.
  * @returns Enhanced inner state with init values.
  */
-export const initalizer = <FieldTypes>(schema: Schema<FieldTypes>): Fields<FieldTypes> =>
+export const initializer = <FieldTypes>(schema: Schema<FieldTypes>): Fields<FieldTypes> =>
   schema.reduce(
     (fields, item) => ({
       ...fields,
@@ -134,7 +134,7 @@ export const initalizer = <FieldTypes>(schema: Schema<FieldTypes>): Fields<Field
 export const reducer = <FieldTypes extends { [key: string]: any }>(fields: Fields<FieldTypes>, action: Actions<FieldTypes>): Fields<FieldTypes> => {
   switch (action.type) {
     case ActionTypes.Reset:
-      return initalizer(action.payload);
+      return initializer(action.payload);
     case ActionTypes.Validate:
       return action.payload;
     case ActionTypes.Change:
