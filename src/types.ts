@@ -1,5 +1,9 @@
 import { ActionTypes } from './enums';
 
+export interface FormValues {
+  [key: string]: any;
+}
+
 export type Field<Value> = { value: Value; error: string };
 export type Fields<FieldTypes> = {
   [Key in keyof FieldTypes]: Field<FieldTypes[Key]>;
@@ -27,7 +31,7 @@ export type SchemaField<Key, Value, FieldTypes> = {
   requiredError?: ValidatorError<Value, FieldTypes>;
   validators?: Validator<Value, FieldTypes>[];
 };
-export type Schema<FieldTypes extends { [key: string]: any }> = Array<{ [Key in keyof FieldTypes]: SchemaField<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
+export type Schema<FieldTypes> = Array<{ [Key in keyof FieldTypes]: SchemaField<Key, FieldTypes[Key], FieldTypes> }[keyof FieldTypes]>;
 export type OnSubmit<FieldTypes> = (fields: FieldTypes) => void;
 export type OnError<FieldTypes> = (fields: Fields<FieldTypes>) => void;
 export type HandleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;

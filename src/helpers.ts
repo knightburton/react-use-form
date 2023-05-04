@@ -89,7 +89,7 @@ export const validateFieldValue = <Key, Value, FieldTypes>(value: Value, schemaF
  * @param schema Inner state schema to get the fields from.
  * @returns The validated state fields and a flag that indicates the whole state is valid or not.
  */
-export const validateFields = <FieldTypes>(fields: Fields<FieldTypes>, schema: Schema<FieldTypes>): ValidationResult<FieldTypes> => {
+export const validateFields = <FieldTypes extends { [key: string]: any }>(fields: Fields<FieldTypes>, schema: Schema<FieldTypes>): ValidationResult<FieldTypes> => {
   const extractedFields = extractFieldValues<FieldTypes>(fields);
   return schema.reduce(
     (o: ValidationResult<FieldTypes>, schemaField) => {

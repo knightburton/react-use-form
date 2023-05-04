@@ -3,7 +3,7 @@ import { IUseForm } from './interfaces';
 import { initalizer, reducer, validateFields, extractFieldValues } from './helpers';
 import { DEFAULT_OPTIONS } from './constants';
 import { ActionTypes } from './enums';
-import type { Fields, Actions, Schema, HandleChange, HandleSubmit, UpdateSchema, UseFormOutput } from './types';
+import { Fields, Actions, Schema, HandleChange, HandleSubmit, UpdateSchema, UseFormOutput, FormValues } from './types';
 
 export type { Schema, Fields, HandleChange, HandleSubmit, UpdateSchema, UseFormOutput } from './types';
 
@@ -13,7 +13,7 @@ export type { Schema, Fields, HandleChange, HandleSubmit, UpdateSchema, UseFormO
  * @param options Properties to change the hook behaviour and init the form schema.
  * @returns Fields state object and callback handlers.
  */
-const useForm = <FieldTypes>({
+const useForm = <FieldTypes extends FormValues = FormValues>({
   schema,
   onSubmit,
   onError,
