@@ -215,7 +215,7 @@ describe('validateFields', () => {
   });
 
   it('returns fields and invalid flag - invalid schema', () => {
-    const field = { ...fields[0], value: `12` };
+    const field = { ...fields.field1, value: `12` };
     const fieldWithError = { value: `12`, error: error3 };
     expect(helpers.validateFields({ ...fields, field1: field }, [field1, field2, field3, field4] as Schema<FieldTypes>)).toEqual({
       validatedFields: { ...fields, field1: fieldWithError },
@@ -224,13 +224,13 @@ describe('validateFields', () => {
   });
 });
 
-describe('initalizer', () => {
+describe('initializer', () => {
   it('returns an empty fields object - empty schema', () => {
-    expect(helpers.initalizer([] as Schema<FieldTypes>)).toEqual({});
+    expect(helpers.initializer([] as Schema<FieldTypes>)).toEqual({});
   });
 
   it('returns the fields object - valid schema', () => {
-    expect(helpers.initalizer([field1, field2, field3, field4] as Schema<FieldTypes>)).toEqual(fields);
+    expect(helpers.initializer([field1, field2, field3, field4] as Schema<FieldTypes>)).toEqual(fields);
   });
 });
 
@@ -243,7 +243,7 @@ describe('reducer', () => {
     expect(helpers.reducer({} as Fields<FieldTypes>, {} as Actions<FieldTypes>)).toEqual({});
   });
 
-  it('returns the reseted state - reset action', () => {
+  it('returns the initial state - reset action', () => {
     expect(helpers.reducer({} as Fields<FieldTypes>, { type: ActionTypes.Reset, payload: [field1, field2, field3, field4] as Schema<FieldTypes> })).toEqual(fields);
   });
 
@@ -261,7 +261,7 @@ describe('extractFieldValues', () => {
     expect(helpers.extractFieldValues({})).toEqual({});
   });
 
-  it('returns a key value paierd object - valid fields state', () => {
+  it('returns a key value paired object - valid fields state', () => {
     expect(helpers.extractFieldValues(fields)).toEqual({ field1: field1.value, field2: field2.value, field3: field3.value, field4: field4.value });
   });
 });
